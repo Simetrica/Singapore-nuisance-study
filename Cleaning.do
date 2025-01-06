@@ -8,7 +8,7 @@ clear all
 cd "$GIT/Singapore-nuisance-study"
 
 * Set up globals
-global CLIENT  "Jacobs - Singapore nuisance study"
+global CLIENT  "Jacobs - Singapore nuisance study (J000434)"
 global PROJECT "$SHAREPOINT/Simetrica - Projects/$CLIENT/Analysis/Main"
 global INPUT   "$PROJECT/Input"
 global OUTPUT  "$PROJECT/Output"
@@ -36,7 +36,7 @@ rename TBA empvar
 rename TBA income
 rename TBA marital
 rename TBA htype
-rename TBA tenure
+rename TBA hsize
 
 * Additional questions
 rename TBA postcode
@@ -47,6 +47,10 @@ rename TBA gen_health
 rename TBA longstandingillness
 rename TBA physicalhealth
 rename TBA mentalhealth
+rename TBA source_nuisance
+rename TBA roads_distance
+rename TBA transport_distance
+rename TBA industry_distance
 rename TBA nuisances
 rename TBA dust_freq
 rename TBA dust_intensity
@@ -54,11 +58,10 @@ rename TBA noise_freq
 rename TBA noise_intensity
 rename TBA odour_freq
 rename TBA odour_intensity
-rename TBA roads_distance
-rename TBA transport_distance
-rename TBA industry_distance
 rename TBA nuisance_effect
+rename TBA vulnerable
 rename TBA complaints
+rename TBA lfsato_nuisance
 rename TBA carer
 rename TBA nchild
 
@@ -76,7 +79,7 @@ la var empvar 				"Employment status"
 la var income 				"Monthly household income (categorical)"
 la var marital 				"Relationship status"
 la var htype 				"Housing type"
-la var tenure 				"Living situation"
+la var hsize 				"Household size"
 la var postcode 			"2 digit postcode"
 la var mrt_station 			"Closest MRT station"
 la var lfsato				"Current life satisfaction (0-10)"
@@ -85,6 +88,10 @@ la var gen_health 			"General health"
 la var longstandingillness	"Has long standing illness or impairment"
 la var physicalhealth		"Physical health"
 la var mentalhealth			"Mental health"
+la var source_nuisance		"Sources of environmental nuisance"
+la var roads_distance		"Distance of a busy road from home"
+la var transport_distance	"Distance of a transport hub from home"
+la var industry_distance	"Distance of an industrial industry from home"
 la var nuisances			"Nuisances affecting you in your home"
 la var dust_freq			"Frequency of dust nuisance"
 la var dust_intensity		"Intensity of dust nuisance"
@@ -92,12 +99,11 @@ la var noise_freq			"Frequency of noise nuisance"
 la var noise_intensity		"Intensity of noise nuisance"
 la var odour_freq			"Frequency of odour nuisance"
 la var odour_intensity		"Intensity of odour nuisance"
-la var roads_distance		"Distance of a busy road from home"
-la var transport_distance	"Distance of a transport hub from home"
-la var industry_distance	"Distance of an industrial industry from home"
 la var nuisance_effect		"How nuisance affects you"
+la var vulnerable			"Members of your household particularly vulnerable to the nuisance exposure"
 la var complaints			"Submitted a complaint regarding the nuisance experiencing"
-la var carer 				 "Is a carer"
+la var lfsato_nuisance		"Life satisfaction - taking into consideration nuisance"
+la var carer 				"Is a carer"
 la var nchild 				"Parent (No. of children)"
 
 *--------------------------------------------------
@@ -110,9 +116,8 @@ notes educ: 				What is your highest level of education?
 notes empvar: 				What is your primary employment status?
 notes income: 				What is your monthly household income? Monthly household income: Your total household income (the monthly income of everyone in the same household added together)
 notes marital: 				What is your current relationship status?
-notes hsize: 				How many people other than yourself are living in your household?
 notes htype: 				You currently live in a...
-notes tenure: 				Which best describes the place you currently live in?
+notes hsize: 				How many people other than yourself are living in your household?
 notes postcode:				Could you please provide the first two digits of your 6-digit postcode?
 notes mrt_station:			Could you please provide the name of the MRT station nearest to your home?
 notes lfsato: 				Overall, how satisfied are you with your life nowadays?
@@ -121,6 +126,10 @@ notes gen_health:			In general, would you say your health is...
 notes longstandingillness:	Do you have any long-standing physical or mental impairment, illness or disability?
 notes physicalhealth:		Have you ever been diagnosed by a doctor or other health professional with any long-term health condition?
 notes mentalhealth:			Have you ever been diagnosed by a doctor or other health professional with any long-term mental health condition?
+notes source_nuisance		Are you affected by environmental nuisance (odour, dust, noise) from any of the following sources when you are in your home?
+notes roads_distance:		Approximately, how close do you live to a busy road or roads?
+notes transport_distance:	Approximately, how close do you live to a transport hub such as an MRT/LRT station, bus interchange, ferry terminal, airport or port?
+notes industry_distance:	Approximately, how close do you live to an industrial facility, such as a warehousing and logistics hub; automotive/vehicle repair shop; industrial building, machinery or storage; wafer and semiconductor fabrication plant; food and beverage manufacturing site; wet lab; recycling plant; power plant or a data centre? 
 notes nuisances:			Which of the following types of nuisances affect you in your home? Please select all that apply.
 notes dust_freq:			How often do you experience dust nuisance in your home environment?
 notes dust_intensity:		At the times you are experiencing a dust nuisance, how would you rate the intensity of this nuisance in your home environment?
@@ -128,11 +137,10 @@ notes noise_freq:			How often do you experience  noise nuisance in your home env
 notes noise_intensity:		At the times you are experiencing a noise nuisance, how would you rate the intensity of this nuisance in your home environment?
 notes odour_freq:			How often do you experience odour nuisance in your home environment?
 notes odour_intensity:		At the times you are experiencing an odour nuisance, how would you rate the intensity of this nuisance in your home environment?
-notes roads_distance:		Approximately, how close do you live to a busy road or roads?
-notes transport_distance:	Approximately, how close do you live to a transport hub such as an MRT/LRT station, bus interchange, ferry terminal, airport or port?
-notes industry_distance:	Approximately, how close do you live to an industrial facility, such as a warehousing and logistics hub; automotive/vehicle repair shop; industrial building, machinery or storage; wafer and semiconductor fabrication plant; food and beverage manufacturing site; wet lab; recycling plant; power plant or a data centre? 
 notes nuisance_effect:		In what way does the nuisance you experience affect you and other members of your household?
+notes vulnerable			Are any members of your household particularly vulnerable to the nuisance exposure - for example, young children, older adults, those who are at home throughout most of the day, persons with long-term health conditions or disabilities?
 notes complaints:			In the last 12 months have you submitted a complaint to either a local government body or the National Environment Agency regarding a nuisance that you have experienced?
+notes lfsato_nuisance		Overall, taking all of the above factors around nuisance from industrial activities and utility infastracturue, how satisfied are youwith your life nowadays?
 notes carer:				Do you look after a family member, partner or friend who needs help because of their illness, frailty, disability, a mental health problem or an addiction and cannot cope without your support?
 notes nchild: 				How many children under the age of 16 live in your household? 
 
@@ -236,16 +244,6 @@ la def marital ///
 	7 "Widowed"
 la val marital marital
 
-* Household size
-la def hsize ///
-	1 "None, I live by myself" ///
-	2 "1" ///
-	3 "2" ///
-	4 "3 to 4" ///
-	5 "5 to 7" ///
-	6 "8 or more"
-la val hsize hsize
-
 * Household type
 la def htype ///
 	1 "HDB 1-2 room" ///
@@ -257,15 +255,15 @@ la def htype ///
 	7 "Others not listed" 
 la val htype htype
 
-* Living situation
-la def tenure ///
-	1  "Bought personally (1st time buyer)" ///
-	2  "Bought personally (not 1st time buyer)" ///
-	3  "Paying rent personally" ///
-	4  "Living in parents'/relatives' house" ///
-	5  "I (or my parents) am not financially responsible for the place I stay" ///
-	.a  "I'm not sure"
-la val tenure tenure
+* Household size
+la def hsize ///
+	1 "None, I live by myself" ///
+	2 "1" ///
+	3 "2" ///
+	4 "3 to 4" ///
+	5 "5 to 7" ///
+	6 "8 or more"
+la val hsize hsize
 
 * General health
 la def gen_health ///
@@ -276,8 +274,21 @@ la def gen_health ///
 	5 "Excellent"
 la val gen_health gen_health
 
+* Sources of environmental nuisance
+la def source_nuisance ///
+	1 "Neighbours" ///
+	2 "Community events" ///	
+	3 "Entertnaiment venues" ///
+	4 "Retail commercial activity (sales and services)" ///	
+	5 "Cleaning of public areas" ///
+	6 "Construction sites" ///
+	7 "Road traffic or other transport" ///
+	8 "Industrial activities and utility infrastructure"
+la val source_nuisance source_nuisance
+
+
 * Good neighbourhood, long standing illness, physical and mental health, submitted a complaint and carer vars
-global yesnovars goodneighbourhood longstandingillness physicalhealth mentalhealth complaints carer
+global yesnovars goodneighbourhood longstandingillness physicalhealth mentalhealth vulnerable complaints carer
 la def yesno ///
 	0  "No" ///
 	1  "Yes" ///
@@ -297,24 +308,21 @@ la val nuisances nuisances
 global freq dust_freq noise_freq odour_freq
 
 la def freq ///
-	1 "At least once a week" ///
-	2 "Less than once a day but at least 3 times a week" ///
-	3 "Once or twice a week" ///
-	4 "Less than that but more than twice a month" ///
-	5 "Once or twice a month" ///
-	6 "Less than that but more than twice a year" ///
-	7 "Once or twice a year" ///
-	8 "Less than that or never" 
+	1 "At least once a day" ///
+	2 "Less than once a day but at least once a week" ///
+	3 "Less than once a week but at least once a month" ///
+	4 "Less than once a month but at least once a year" ///
+	5 "Less than that or never" 
 la val freq freq
 
 * Intensity of nuisances
 global intensity dust_intensity noise_intensity odour_intensity
 
 la def intensity ///
-	1 "Light to moderate but not objectionable" ///
-	2 "Somewhat objectionable but not sufficient to interfere" ///
-	3 "Objectionable and tends to interfere" ///
-	4 "Highly objectionable and potentially harmful"
+	1 "Light to moderate but not problematic" ///
+	2 "Somewhat problematic but not sufficient to interfere" ///
+	3 "Problematic and tends to interfere" ///
+	4 "Highly problematic and potentially harmful to health"
 la val intensity intensity
 
 * Distance of sources of nuisances
@@ -366,9 +374,6 @@ la def agecat ///
 	2 "25-54" ///
 	3 "55+"
 la val agecat agecat
-
-* Tenure (replacing the 6th category "I am not sure" as missing )
-replace tenure=. if tenure==6
 
 * Chinese (dummy)
 gen chinese = ethnicity == 1 if ethnicity < .
@@ -431,15 +436,21 @@ gen children = nchild != .
 la var children "Has children"
 la val children yesno
 
+/*
+//Potentially not to be used - we wont have the tenure var
 * Owns house (dummy)
 gen ownhouse = tenure < 3 if tenure < .
 la var ownhouse "Owns house"
 la val ownhouse yesno
+*/
 
 * Good health (dummy)
 gen ghealth = gen_health > 3 if gen_health < .
 la var ghealth "Has very good or excellent health"
 la val ghealth yesno
+
+
+// What we used in the other Singapore project
 
 * Annual household income
 decode income, gen(inc_cat) 						  // Convert to a string
@@ -454,6 +465,25 @@ la var hmincome "Monthly household income"
 * Log of annual household income
 gen lhhincome = ln(hhincome)
 la var lhhincome "Natural logarithm of annual household income"
+
+
+// USoc code for income since we have the household size and number of kids
+*****TBC******
+
+/* Using the definition of Powdthavee_Lekfuanglu_Wooden_2015
+Equivalised real annual household income is calculated using the following formula:
+real annual household income/(1 + 0.5*(number of adult household members
+- 1) + 0.3*(number of children aged less than 15 in the household)).
+*/
+	
+replace nkids_dv = . if nkids_dv < 0 // defined as 0-15 (separate categories up to 12-15 years)
+gen eq_hhincome = hincome / ( 1 + 0.5*(nadoecd_dv - 1) + 0.3*nkids_dv) // adults defined as 14+ so some overlap
+la var eq_hhincome "Equivalised household income"
+
+gen leq_hhincome = log(eq_hhincome + 1)
+replace leq_hhincome = 0 if fihhmngrs_dv == 0
+la var leq_hhincome "Log equivalised household income (+1 correction)"
+
 
 
 *--------------------------------------------------
