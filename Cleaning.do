@@ -14,56 +14,79 @@ global INPUT   "$PROJECT/Input"
 global OUTPUT  "$PROJECT/Output"
 
 * Include Simetrica-created functions
-include functions
+adopath ++ "$GIT/stata_functions"
 
 *---------------------------------------------------
 * Import main data
 *---------------------------------------------------
 
-import excel using "$INPUT/TBA.xlsx", sheet("TBA") firstrow clear
+import excel using "$INPUT/Simetrica Jacob raw data - sent.xlsx", sheet("result") firstrow clear
 
 *---------------------------------------------------
 * Renaming
 *---------------------------------------------------
 
 * Pre-existing demographic questions
-rename TBA female
-rename TBA ageg
-rename TBA ethnicity
-rename TBA religion
-rename TBA educ
-rename TBA empvar
-rename TBA income
-rename TBA marital
-rename TBA htype
-rename TBA hsize
+rename s1 female
+rename s2 ageg
+rename s3 ethnicity
+rename s4 religion
+rename s6 educ
+rename s7 empvar
+rename s15 income
+rename s20 marital
+rename s39 htype
+rename s35 hsize
 
 * Additional questions
-rename TBA postcode
-rename TBA mrt_station
-rename TBA lfsato
-rename TBA goodneighbourhood
-rename TBA gen_health
-rename TBA longstandingillness
-rename TBA physicalhealth
-rename TBA mentalhealth
-rename TBA source_nuisance
-rename TBA roads_distance
-rename TBA transport_distance
-rename TBA industry_distance
-rename TBA nuisances
-rename TBA dust_freq
-rename TBA dust_intensity
-rename TBA noise_freq
-rename TBA noise_intensity
-rename TBA odour_freq
-rename TBA odour_intensity
-rename TBA nuisance_effect
-rename TBA vulnerable
-rename TBA complaints
-rename TBA lfsato_nuisance
-rename TBA carer
-rename TBA nchild
+rename q2r1 postcode
+rename q2r2 mrt_station
+rename q3 lfsato
+rename q4 gen_health
+rename q5 longstandingillness
+rename q6 physicalhealth
+rename q7 mentalhealth
+rename q8r1 source_neighbours
+rename q8r2 source_commeract
+rename q8r3 source_entertvenues
+rename q8r4 source_retail
+rename q8r5 source_cleanpublic
+rename q8r6 source_constrsites
+rename q8r7 source_roadtraffic
+rename q8r8 source_industrial
+rename q8r9 source_other
+rename q8r10 source_none
+rename q9 text_source_other
+rename q10 roads_distance
+rename q11 transport_distance
+rename q12 industry_distance
+rename q13r1 dust
+rename q13r2 noise
+rename q13r3 odour
+rename q13r4 nuisance_other
+rename q13r5 nuisance_none
+rename q14 text_nuisance_other
+rename q15 dust_freq
+rename q16 dust_intensity
+rename q17 noise_freq
+rename q18 noise_intensity
+rename q19 odour_freq
+rename q20 odour_intensity
+rename q21r1 effect_sleep
+rename q21r2 effect_recreation
+rename q21r3 effect_focus
+rename q21r4 effect_housework
+rename q21r5 effect_windows
+rename q21r6 effect_mood
+rename q21r7 effect_symptoms
+rename q21r8 effect_other
+rename q21r9 effect_none
+rename q22 text_effect_other
+rename q23 vulnerable
+rename q24 complaints
+rename q25 lfsato_nuisance
+rename q26 carer
+rename q27 nchild
 
 
 *--------------------------------------------------
@@ -83,23 +106,46 @@ la var hsize 				"Household size"
 la var postcode 			"2 digit postcode"
 la var mrt_station 			"Closest MRT station"
 la var lfsato				"Current life satisfaction (0-10)"
-la var goodneighbourhood	"Likes present neighbourhood"
 la var gen_health 			"General health"
 la var longstandingillness	"Has long standing illness or impairment"
 la var physicalhealth		"Physical health"
 la var mentalhealth			"Mental health"
-la var source_nuisance		"Sources of environmental nuisance"
+la var source_neighbours	"Neighbours"
+la var source_commeract		"Community activities (e.g. playgrounds or exercise facilities)"
+la var source_entertvenues	"Entertainment venues (e.g. sports arenas or concert halls)"
+la var source_retail		"Retail commercial activities (e.g. shopping malls, food establishments) "
+la var source_cleanpublic	"Cleaning of public areas"
+la var source_constrsites	"Construction sites"
+la var source_roadtraffic	"Road traffic or other transport"
+la var source_industrial	"Industrial activities (e.g. warehousing and logistics; food and beverage manufacturing; wet labs; recycling plants; power plants or data centres)"
+la var source_other			"Other"
+la var source_none			"None of the above"
+la var text_source_other 	"Other environment nuisance they are affected by"
 la var roads_distance		"Distance of a busy road from home"
 la var transport_distance	"Distance of a transport hub from home"
 la var industry_distance	"Distance of an industrial industry from home"
-la var nuisances			"Nuisances affecting you in your home"
+la var dust 				"Dust/Smoke nuisance affecting you in your home"
+la var noise 				"Noise nuisance affecting you in your home"
+la var odour 				"Smell/Odour nuisance affecting you in your home"
+la var nuisance_other 		"Other nuisance affecting you in your home"
+la var nuisance_none 		"None nuisance affecting you in your home"
+la var text_nuisance_other 	"Text for other type of nuisances affecting you in your home"
 la var dust_freq			"Frequency of dust nuisance"
 la var dust_intensity		"Intensity of dust nuisance"
 la var noise_freq			"Frequency of noise nuisance"
 la var noise_intensity		"Intensity of noise nuisance"
 la var odour_freq			"Frequency of odour nuisance"
 la var odour_intensity		"Intensity of odour nuisance"
-la var nuisance_effect		"How nuisance affects you"
+la var effect_sleep			"It affects my sleep"
+la var effect_recreation	"It affects my recreation and relaxing time at home"
+la var effect_focus			"It affects my focus when studying or working at home"
+la var effect_housework		"It affects my way of doing housework at my home (e.g. how often it is vacuumed, when are meals cooked, or how the laundry is done)"
+la var effect_windows		"It affects when/how often I can open the windows at my home"
+la var effect_mood			"It affects my mood, making me anxious or angrier than usual"
+la var effect_symptoms		"It makes me prone to experiencing physiological symptoms, such as headaches, feeling dizzy or nauseous, respiratory infections, difficulty breathing, loss of appetite, etc."
+la var effect_other			"Other effect"
+la var effect_none			"Not at all"
+la var text_effect_other 	"Text for other ways nuisances affect you"
 la var vulnerable			"Members of your household particularly vulnerable to the nuisance exposure"
 la var complaints			"Submitted a complaint regarding the nuisance experiencing"
 la var lfsato_nuisance		"Life satisfaction - taking into consideration nuisance"
@@ -121,34 +167,39 @@ notes hsize: 				How many people other than yourself are living in your househol
 notes postcode:				Could you please provide the first two digits of your 6-digit postcode?
 notes mrt_station:			Could you please provide the name of the MRT station nearest to your home?
 notes lfsato: 				Overall, how satisfied are you with your life nowadays?
-notes goodneighbourhood:	Overall, do you like living in your neighbourhood?
 notes gen_health:			In general, would you say your health is...
 notes longstandingillness:	Do you have any long-standing physical or mental impairment, illness or disability?
 notes physicalhealth:		Have you ever been diagnosed by a doctor or other health professional with any long-term health condition?
 notes mentalhealth:			Have you ever been diagnosed by a doctor or other health professional with any long-term mental health condition?
-notes source_nuisance		Are you affected by environmental nuisance (odour, dust, noise) from any of the following sources when you are in your home?
 notes roads_distance:		Approximately, how close do you live to a busy road or roads?
 notes transport_distance:	Approximately, how close do you live to a transport hub such as an MRT/LRT station, bus interchange, ferry terminal, airport or port?
 notes industry_distance:	Approximately, how close do you live to an industrial facility, such as a warehousing and logistics hub; automotive/vehicle repair shop; industrial building, machinery or storage; wafer and semiconductor fabrication plant; food and beverage manufacturing site; wet lab; recycling plant; power plant or a data centre? 
-notes nuisances:			Which of the following types of nuisances affect you in your home? Please select all that apply.
 notes dust_freq:			How often do you experience dust nuisance in your home environment?
 notes dust_intensity:		At the times you are experiencing a dust nuisance, how would you rate the intensity of this nuisance in your home environment?
 notes noise_freq:			How often do you experience  noise nuisance in your home environment?
 notes noise_intensity:		At the times you are experiencing a noise nuisance, how would you rate the intensity of this nuisance in your home environment?
 notes odour_freq:			How often do you experience odour nuisance in your home environment?
 notes odour_intensity:		At the times you are experiencing an odour nuisance, how would you rate the intensity of this nuisance in your home environment?
-notes nuisance_effect:		In what way does the nuisance you experience affect you and other members of your household?
-notes vulnerable			Are any members of your household particularly vulnerable to the nuisance exposure - for example, young children, older adults, those who are at home throughout most of the day, persons with long-term health conditions or disabilities?
+notes vulnerable:			Are any members of your household particularly vulnerable to the nuisance exposure - for example, young children, older adults, those who are at home throughout most of the day, persons with long-term health conditions or disabilities?
 notes complaints:			In the last 12 months have you submitted a complaint to either a local government body or the National Environment Agency regarding a nuisance that you have experienced?
-notes lfsato_nuisance		Overall, taking all of the above factors around nuisance from industrial activities and utility infastracturue, how satisfied are youwith your life nowadays?
+notes lfsato_nuisance:		Overall, taking all of the above factors around nuisance from industrial activities and utility infastracturue, how satisfied are youwith your life nowadays?
 notes carer:				Do you look after a family member, partner or friend who needs help because of their illness, frailty, disability, a mental health problem or an addiction and cannot cope without your support?
 notes nchild: 				How many children under the age of 16 live in your household? 
 
 *--------------------------------------------------
 * Recoding
 *--------------------------------------------------
+global yesnovars longstandingillness physicalhealth mentalhealth vulnerable complaints carer source_* dust noise odour nuisance_other nuisance_none effect_*
+foreach var in $yesnovars {
+	recode `var' (2=0) (3=.)
+}
 
-//TBA if needed
+recode female 	    (1=0) (2=1)
+recode nchild (1=0) (2=1) (3=2) (4=3) (5=4) (6=.)
+recode *_intensity (5=.) // adds the ones that have selected the nuisance but answered "Don't know" for the intensity with the overall missing-which also include those that dont qualify for this question since they didnt select that type of nuisance
+recode *_freq (6=.)  // adds the ones that have selected the nuisance but answered "Don't know" for the frequency with the overall missing-which also include those that dont qualify for this question since they didnt select that type of nuisance
+recode *_distance (7=.)
+recode income (10=.)
 
 *--------------------------------------------------
 * Encoding
@@ -274,46 +325,25 @@ la def gen_health ///
 	5 "Excellent"
 la val gen_health gen_health
 
-* Sources of environmental nuisance
-la def source_nuisance ///
-	1 "Neighbours" ///
-	2 "Community events" ///	
-	3 "Entertnaiment venues" ///
-	4 "Retail commercial activity (sales and services)" ///	
-	5 "Cleaning of public areas" ///
-	6 "Construction sites" ///
-	7 "Road traffic or other transport" ///
-	8 "Industrial activities and utility infrastructure"
-la val source_nuisance source_nuisance
-
-
-* Good neighbourhood, long standing illness, physical and mental health, submitted a complaint and carer vars
-global yesnovars goodneighbourhood longstandingillness physicalhealth mentalhealth vulnerable complaints carer
+* Long standing illness, physical and mental health, submitted a complaint and carer vars
+global yesnovars longstandingillness physicalhealth mentalhealth vulnerable complaints carer source_* dust noise odour nuisance_other nuisance_none effect_*
 la def yesno ///
 	0  "No" ///
 	1  "Yes" ///
 	.a "Don't know/Rather not say"
-la val yesnovars yesno
+la val $yesnovars yesno
 
-* Nuisance
-la def nuisances ///
-	1 "Dust/Smoke" ///
-	2 "Noise" ///
-	3 "Smell/Odour" ///
-	4 "Other" ///
-	5 "None" 
-la val nuisances nuisances
 
 * Frequency of nuisances
 global freq dust_freq noise_freq odour_freq
 
 la def freq ///
 	1 "At least once a day" ///
-	2 "Less than once a day but at least once a week" ///
-	3 "Less than once a week but at least once a month" ///
-	4 "Less than once a month but at least once a year" ///
-	5 "Less than that or never" 
-la val freq freq
+	2 "Not daily but at least once a week" ///
+	3 "Not weekly but at least once a month" ///
+	4 "Not monthly but at least once a year" ///
+	5 "Never" 
+la val $freq freq
 
 * Intensity of nuisances
 global intensity dust_intensity noise_intensity odour_intensity
@@ -323,7 +353,7 @@ la def intensity ///
 	2 "Somewhat problematic but not sufficient to interfere" ///
 	3 "Problematic and tends to interfere" ///
 	4 "Highly problematic and potentially harmful to health"
-la val intensity intensity
+la val $intensity intensity
 
 * Distance of sources of nuisances
 global distance roads_distance transport_distance industry_distance
@@ -335,25 +365,14 @@ la def distance ///
 	4 "500m-1km" ///
 	5 "1-2km" ///
 	6 "More than 2km"
-la val distance distance
-
-* How nuisance affects you
-la def nuisance_effect ///
-	1 "Affects my sleep" ///
-	2 "Affects my recreation and relaxing time at home" ///
-	3 "Affects my focus when studying or working at home" ///
-	4 "Affects my way of doing housework at my home" ///
-	5 "Affects when/how often I can open the windows at my home" ///
-	6 "Affects my mood, making me anxious or angrier than usually" ///
-	7 "It makes me prone to experiencing physiological symptoms" ///
-	8 "Other"
-la val nuisance_effect nuisance_effect
+la val $distance distance
 
 * Number of children 
 la def nchild ///
-	1 "1" ///
-	2 "2" ///
-	3 "3" ///
+	0 "No children" ///
+	1 "1 child" ///
+	2 "2 children" ///
+	3 "3 children" ///
 	4 "4 or more"
 la val nchild nchild
 
@@ -436,13 +455,6 @@ gen children = nchild != .
 la var children "Has children"
 la val children yesno
 
-/*
-//Potentially not to be used - we wont have the tenure var
-* Owns house (dummy)
-gen ownhouse = tenure < 3 if tenure < .
-la var ownhouse "Owns house"
-la val ownhouse yesno
-*/
 
 * Good health (dummy)
 gen ghealth = gen_health > 3 if gen_health < .
@@ -466,24 +478,43 @@ la var hmincome "Monthly household income"
 gen lhhincome = ln(hhincome)
 la var lhhincome "Natural logarithm of annual household income"
 
+// Generating variables of interest
 
-// USoc code for income since we have the household size and number of kids
-*****TBC******
+// Living within 1km of an industrial site
+gen living_close_1km= industry_distance<5 if industry_distance<.
+la var living_close_1km "Lives within 1km"
+la val living_close_1km yesno
 
-/* Using the definition of Powdthavee_Lekfuanglu_Wooden_2015
-Equivalised real annual household income is calculated using the following formula:
-real annual household income/(1 + 0.5*(number of adult household members
-- 1) + 0.3*(number of children aged less than 15 in the household)).
-*/
-	
-replace nkids_dv = . if nkids_dv < 0 // defined as 0-15 (separate categories up to 12-15 years)
-gen eq_hhincome = hincome / ( 1 + 0.5*(nadoecd_dv - 1) + 0.3*nkids_dv) // adults defined as 14+ so some overlap
-la var eq_hhincome "Equivalised household income"
+// Living within 500m of an industrial site
+gen living_close_500m= industry_distance<4 if industry_distance<.
+la var living_close_500m "Lives within 500m"
+la val living_close_500m yesno
 
-gen leq_hhincome = log(eq_hhincome + 1)
-replace leq_hhincome = 0 if fihhmngrs_dv == 0
-la var leq_hhincome "Log equivalised household income (+1 correction)"
+// High intensity vars for the three sources
+gen dust_highintensity= dust_intensity>2 if dust_intensity<.
+la var dust_highintensity "Problematic to highly problematic"
+la val dust_highintensity yesno
 
+gen noise_highintensity= noise_intensity>2 if noise_intensity<.
+la var noise_highintensity "Problematic to highly problematic"
+la val noise_highintensity yesno
+
+gen odour_highintensity= odour_intensity>2 if odour_intensity<.
+la var odour_highintensity "Problematic to highly problematic"
+la val odour_highintensity yesno
+
+// High frequency vars for the three sources
+gen dust_highfreq= dust_freq<3 if dust_freq<.
+la var dust_highfreq "At least once a week"
+la val dust_highfreq yesno
+
+gen noise_highfreq= noise_freq<3 if noise_freq<.
+la var noise_highfreq "At least once a week"
+la val noise_highfreq yesno
+
+gen odour_highfreq= odour_freq<3 if odour_freq<.
+la var odour_highfreq "At least once a week"
+la val odour_highfreq yesno
 
 
 *--------------------------------------------------
@@ -498,7 +529,7 @@ drop if age < 15
 
 
 * Drop unneeded variables
-drop 
+drop q1 q8r11 q13r6 q21r10 inc_cat1 inc_cat2
 
 *--------------------------------------------------
 * Save cleaned data
