@@ -15,7 +15,6 @@ global OUTPUT  "$PROJECT/Output"
 
 * Include Simetrica-created functions
 adopath ++ "$GIT/stata_functions"
-include functions
 
 *---------------------------------------------------
 * Import cleaned data
