@@ -326,13 +326,30 @@ la def gen_health ///
 la val gen_health gen_health
 
 * Long standing illness, physical and mental health, submitted a complaint and carer vars
-global yesnovars longstandingillness physicalhealth mentalhealth vulnerable complaints carer source_* dust noise odour nuisance_other nuisance_none effect_*
+global yesnovars longstandingillness physicalhealth mentalhealth vulnerable complaints carer source_* nuisance_other nuisance_none effect_*
 la def yesno ///
 	0  "No" ///
 	1  "Yes" ///
 	.a "Don't know/Rather not say"
 la val $yesnovars yesno
 
+la def dust ///
+	0  "No dust nuisance" ///
+	1  "Yes for dust nuisance" ///
+	.a "Don't know/Rather not say"
+la val dust dust
+
+la def noise ///
+	0  "No noise nuisance" ///
+	1  "Yes for noise nuisance" ///
+	.a "Don't know/Rather not say"
+la val noise noise
+
+la def odour ///
+	0  "No odour nuisance" ///
+	1  "Yes for odour nuisance" ///
+	.a "Don't know/Rather not say"
+la val odour odour
 
 * Frequency of nuisances
 global freq dust_freq noise_freq odour_freq
@@ -478,43 +495,214 @@ la var hmincome "Monthly household income"
 gen lhhincome = ln(hhincome)
 la var lhhincome "Natural logarithm of annual household income"
 
+* Equivalised income
+* Number of adults in the household for the lower bound of the categories
+gen adults_a=.
+replace adults_a= 1 if hsize==1 | (hsize==2 & (nchild>0 | nchild==.) )| (hsize==3 & nchild>1 & nchild<.) | (hsize==4 & nchild>2 & nchild<.) 
+replace adults_a= 2 if (hsize==2 & (nchild==. | nchild==0)) | (hsize==3 & nchild==1)  | (hsize==4 & nchild==2) | (hsize==5 & nchild==4)
+replace adults_a= 3 if (hsize==3 & (nchild==. | nchild==0)) | (hsize==4 & nchild==1) | (hsize==5 & nchild==3)
+replace adults_a= 4 if (hsize==4 & (nchild==. | nchild==0)) | (hsize==5 & nchild==2)
+replace adults_a= 5 if (hsize==5 & (nchild==. | nchild==1)) | (hsize==6 & nchild==4)
+replace adults_a= 6 if (hsize==5 & (nchild==. | nchild==0)) | (hsize==6 & nchild==3)
+replace adults_a= 7 if hsize==6 & (nchild==. | nchild==2) 
+replace adults_a= 8 if hsize==6 & (nchild==. | nchild==1)
+replace adults_a= 9 if hsize==6 & (nchild==. | nchild==0)
+la var adults_a "Lower bound of adults in the household"
+
+la def adults ///
+	1 "1 adult in the household" ///
+	2 "2 adults in the household" ///
+	3 "3 adults in the household" ///
+	4 "4 adults in the household" ///
+	5 "5 adults in the household" ///
+	6 "6 adults in the household" ///
+	7 "7 adults in the household" ///
+	8 "8 adults in the household" ///
+	9 "9 adults in the household"
+la val adults_a adults
+
+* Number of adults in the household for the upper bound of the categories
+gen adults_b=.
+replace adults_b= 1 if hsize==1 | (hsize==2 & nchild>0) | (hsize==3 & nchild>1 & nchild<.) | (hsize==4 & nchild==4)  | nchild==.
+replace adults_b= 2 if (hsize==2 & (nchild==. | nchild==0)) | (hsize==3 & nchild==1) | (hsize==4 & nchild==3) 
+replace adults_b= 3 if (hsize==3 & (nchild==. | nchild==0)) | (hsize==4 & nchild==2) 
+replace adults_b= 4 if (hsize==4 & (nchild==. | nchild==1)) | (hsize==5 & nchild==4) 
+replace adults_b= 5 if (hsize==4 & (nchild==. | nchild==0)) | (hsize==5 & nchild==3) | (hsize==6 & nchild==4)
+replace adults_b= 6 if (hsize==5 & (nchild==. | nchild==2)) | (hsize==6 & nchild==3)
+replace adults_b= 7 if (hsize==5 & (nchild==. | nchild==1)) | (hsize==6 & nchild==2) 
+replace adults_b= 8 if (hsize==5 & (nchild==. | nchild==0)) | (hsize==6 & nchild==1)
+replace adults_b= 9 if hsize==6 & (nchild==. | nchild==0)
+la var adults_b "Lower bound of adults in the household"
+la val adults_b adults
+
+* Number of children in the household
+gen child_inc=.
+replace child_inc=0 if hsize==1 | nchild==0 | nchild==.
+replace child_inc=1 if (hsize==2 & nchild>0) | (hsize>2 & nchild==1)
+replace child_inc=2 if (hsize==3 & nchild>1) | (hsize>3 & nchild==2)
+replace child_inc=3 if (hsize>3 & nchild==3)
+replace child_inc=4 if (hsize>3 & nchild==4)
+la var child_inc "Number of children in the household"
+
+la def child_inc ///
+	1 "1 child in the household" ///
+	2 "2 children in the household" ///
+	3 "3 children in the household" ///
+	4 "4 children in the household" 
+la val child_inc child_inc
+
+/* Using the definition of Powdthavee_Lekfuanglu_Wooden_2015
+Equivalised real annual household income is calculated using the following formula:
+real annual household income/(1 + 0.5*(number of adult household members
+- 1) + 0.3*(number of children aged less than 15 in the household)).
+*/
+	
+gen eq_hhincome = hhincome / ( 1 + 0.5*(adults_a - 1) + 0.3*child_inc) // adults defined as 14+ so some overlap
+la var eq_hhincome "Equivalised household income"
+
+gen leq_hhincome = log(eq_hhincome + 1)
+la var leq_hhincome "Log equivalised household income (+1 correction)"
+
 // Generating variables of interest
 
 // Living within 1km of an industrial site
 gen living_close_1km= industry_distance<5 if industry_distance<.
 la var living_close_1km "Lives within 1km"
-la val living_close_1km yesno
+
+la def living_close_1km ///
+	0 "Lives further than 1km" ///
+	1 "Lives close <1km"
+la val living_close_1km living_close_1km
+
 
 // Living within 500m of an industrial site
 gen living_close_500m= industry_distance<4 if industry_distance<.
 la var living_close_500m "Lives within 500m"
-la val living_close_500m yesno
+
+la def living_close_500m ///
+	0 "Lives further than 500m" ///
+	1 "Lives close <500m"
+la val living_close_500m living_close_500m
 
 // High intensity vars for the three sources
 gen dust_highintensity= dust_intensity>2 if dust_intensity<.
+replace dust_highintensity=0 if dust_intensity==.
 la var dust_highintensity "Problematic to highly problematic"
-la val dust_highintensity yesno
 
-gen noise_highintensity= noise_intensity>2 if noise_intensity<.
+la def dust_highintensity ///
+	0 "No intense dust" ///
+	1 "Dust with high intensity"
+la val dust_highintensity dust_highintensity
+
+
+gen noise_highintensity=noise_intensity>2 if noise_intensity<.
+replace noise_highintensity=0 if noise_intensity==.
 la var noise_highintensity "Problematic to highly problematic"
-la val noise_highintensity yesno
 
-gen odour_highintensity= odour_intensity>2 if odour_intensity<.
+la def noise_highintensity ///
+	0 "No intense noise" ///
+	1 "Noise with high intensity"
+la val noise_highintensity noise_highintensity
+
+gen odour_highintensity=odour_intensity>2 if odour_intensity<.
+replace odour_highintensity=0 if odour_intensity==.
 la var odour_highintensity "Problematic to highly problematic"
-la val odour_highintensity yesno
+
+la def odour_highintensity ///
+	0 "No intense odour" ///
+	1 "Odour with high intensity"
+la val odour_highintensity odour_highintensity
 
 // High frequency vars for the three sources
-gen dust_highfreq= dust_freq<3 if dust_freq<.
+gen dust_highfreq=dust_freq<3 if dust_freq<.
+replace dust_highfreq=0 if dust_freq==.
 la var dust_highfreq "At least once a week"
-la val dust_highfreq yesno
 
-gen noise_highfreq= noise_freq<3 if noise_freq<.
+la def dust_highfreq ///
+	0 "No frequent dust" ///
+	1 "Dust with high frequency"
+la val dust_highfreq dust_highfreq
+
+gen noise_highfreq=noise_freq<3 if noise_freq<.
+replace noise_highfreq=0 if noise_freq==.
 la var noise_highfreq "At least once a week"
-la val noise_highfreq yesno
 
-gen odour_highfreq= odour_freq<3 if odour_freq<.
+la def noise_highfreq ///
+	0 "No frequent noise" ///
+	1 "Noise with high frequency"
+la val noise_highfreq noise_highfreq
+
+gen odour_highfreq=odour_freq<3 if odour_freq<.
+replace odour_highfreq=0 if odour_freq==.
 la var odour_highfreq "At least once a week"
-la val odour_highfreq yesno
+
+la def odour_highfreq ///
+	0 "No frequent odour" ///
+	1 "Odour with high frequency"
+la val odour_highfreq odour_highfreq
+
+* Dummies for the combination of high frequency and high intensity
+gen dust_combined_dum=0
+replace dust_combined_dum=1 if dust_highfreq==1 & dust_highintensity==1
+la var dust_combined_dum "Dummy dust high frequency and intensity"
+
+la def dust_combined_dum ///
+	0 "No intense or freq dust" ///
+	1 "Dust with high freq & intensity"
+la val dust_combined_dum dust_combined_dum
+
+
+gen noise_combined_dum=0
+replace noise_combined_dum=1 if noise_highfreq==1 & noise_highintensity==1
+la var noise_combined_dum "Dummy noise high frequency and intensity"
+
+la def noise_combined_dum ///
+	0 "No intense or freq noise" ///
+	1 "Noise with high freq & intensity"
+la val noise_combined_dum noise_combined_dum
+
+gen odour_combined_dum=0
+replace odour_combined_dum=1 if odour_highfreq==1 & odour_highintensity==1
+la var odour_combined_dum "Dummy odour high frequency and intensity"
+
+la def odour_combined_dum ///
+	0 "No intense or freq odour" ///
+	1 "Odour with high freq & intensity"
+la val odour_combined_dum odour_combined_dum
+
+* Categorical for the combination of high frequency and high intensity
+gen dust_combined_cat=0
+replace dust_combined_cat=1 if (dust_highfreq==1 & dust_highintensity==0) | (dust_highfreq==0 & dust_highintensity==1)
+replace dust_combined_cat=2 if dust_highfreq==1 & dust_highintensity==1
+la var dust_combined_cat "Categorical dust for high frequency and intensity"
+
+la def dust_cat ///
+	0 "No dust experienced" ///
+	1 "Dust and either high intensity or high frequency" ///
+	2 "Dust and high intensity and frequency" 
+la val dust_combined_cat dust_cat
+
+gen noise_combined_cat=0
+replace noise_combined_cat=1 if (noise_highfreq==1 & noise_highintensity==0) | (noise_highfreq==0 & noise_highintensity==1)
+replace noise_combined_cat=2 if noise_highfreq==1 & noise_highintensity==1
+la var noise_combined_cat "Categorical noise for high frequency and intensity"
+
+la def noise_cat ///
+	0 "No noise experienced" ///
+	1 "Noise and either high intensity or high frequency" ///
+	2 "Noise and high intensity and frequency" 
+la val noise_combined_cat noise_cat
+
+gen odour_combined_cat=0
+replace odour_combined_cat=1 if (odour_highfreq==1 & odour_highintensity==0) | (odour_highfreq==0 & odour_highintensity==1)
+replace odour_combined_cat=2 if odour_highfreq==1 & odour_highintensity==1
+la var odour_combined_cat "Categorical odour for high frequency and intensity"
+
+la def odour_cat ///
+	0 "No odour experienced" ///
+	1 "Odour and either high intensity or high frequency" ///
+	2 "Odour and high intensity and frequency" 
+la val odour_combined_cat odour_cat
 
 
 *--------------------------------------------------
