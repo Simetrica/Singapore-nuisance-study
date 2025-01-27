@@ -431,6 +431,18 @@ gen employed = empvar < 8 if empvar < .
 la var employed "Is currently employed"
 la val employed yesno
 
+* Employed (categorical)
+gen employed_cat=0
+replace employed_cat=1 if (empvar<11 & empvar>7 & empvar<.)  | (empvar>11 & empvar<.)
+replace employed_cat=2 if empvar<8 & empvar<.
+la var employed_cat "Is currently employed categorical"
+
+la def employed_cat ///
+	0 "Unemployed" ///
+	1 "Student, retired, unemployed not looking etc." ///
+	2 "Employed"
+la val employed_cat employed_cat
+
 * Married (dummy)
 gen married = marital == 5 if marital < .
 la var married "Is married"
@@ -584,6 +596,9 @@ la def living_close_500m ///
 	1 "Lives close <500m"
 la val living_close_500m living_close_500m
 
+*---------------------
+* Alternative 1
+*---------------------
 // High intensity vars for the three sources
 gen dust_highintensity= dust_intensity>2 if dust_intensity<.
 replace dust_highintensity=0 if dust_intensity==.
@@ -670,7 +685,7 @@ la def odour_combined_dum ///
 	1 "Odour with high freq & intensity"
 la val odour_combined_dum odour_combined_dum
 
-* Categorical for the combination of high frequency and high intensity
+// Categorical for the combination of high frequency and high intensity
 gen dust_combined_cat=0
 replace dust_combined_cat=1 if (dust_highfreq==1 & dust_highintensity==0) | (dust_highfreq==0 & dust_highintensity==1)
 replace dust_combined_cat=2 if dust_highfreq==1 & dust_highintensity==1
@@ -703,6 +718,80 @@ la def odour_cat ///
 	1 "Odour and either high intensity or high frequency" ///
 	2 "Odour and high intensity and frequency" 
 la val odour_combined_cat odour_cat
+
+
+*---------------------
+* Alternative 2
+*---------------------
+
+// Intensity vars for the three sources
+gen cat_dust_intensity= 0
+replace cat_dust_intensity=1 if (dust==1 & dust_intensity<3 & dust_intensity<.) | (dust==1 & dust_intensity==.) 
+replace cat_dust_intensity=2 if dust==1 & dust_intensity>2 & dust_intensity<.
+la var cat_dust_intensity "Dust categorical for intensity"
+
+la def cat_dust_intensity ///
+	0 "No dust" ///
+	1 "Dust with low intensity" ///
+	2 "Dust with high intensity"
+la val cat_dust_intensity cat_dust_intensity
+
+gen cat_noise_intensity= 0
+replace cat_noise_intensity=1 if (noise==1 & noise_intensity<3 & noise_intensity<.) | (noise==1 & noise_intensity==.) 
+replace cat_noise_intensity=2 if noise==1 & noise_intensity>2 & noise_intensity<.
+la var cat_noise_intensity "Noise categorical for intensity"
+
+la def cat_noise_intensity ///
+	0 "No noise" ///
+	1 "Noise with low intensity" ///
+	2 "Noise with high intensity"
+la val cat_noise_intensity cat_noise_intensity
+
+gen cat_odour_intensity= 0
+replace cat_odour_intensity=1 if (odour==1 & odour_intensity<3 & odour_intensity<.) | (odour==1 & odour_intensity==.) 
+replace cat_odour_intensity=2 if odour==1 & odour_intensity>2 & odour_intensity<.
+la var cat_odour_intensity "Odour categorical for intensity"
+
+la def cat_odour_intensity ///
+	0 "No odour" ///
+	1 "Odour with low intensity" ///
+	2 "Odour with high intensity"
+la val cat_odour_intensity cat_odour_intensity
+
+
+// Frequency vars for the three sources
+gen cat_dust_freq= 0
+replace cat_dust_freq=1 if (dust==1 & dust_freq>2 & dust_freq<.) | (dust==1 & dust_freq==.) 
+replace cat_dust_freq=2 if dust==1 & dust_freq<3 & dust_freq<.
+la var cat_dust_freq "Dust categorical for frequency"
+
+la def cat_dust_freq ///
+	0 "No dust" ///
+	1 "Dust with low frequency" ///
+	2 "Dust with high frequency"
+la val cat_dust_freq cat_dust_freq
+
+gen cat_noise_freq= 0
+replace cat_noise_freq=1 if (noise==1 & noise_freq>2 & noise_freq<.) | (noise==1 & noise_freq==.) 
+replace cat_noise_freq=2 if noise==1 & noise_freq<3 & noise_freq<.
+la var cat_noise_freq "Noise categorical for frequency"
+
+la def cat_noise_freq ///
+	0 "No noise" ///
+	1 "Noise with low frequency" ///
+	2 "Noise with high frequency"
+la val cat_noise_freq cat_noise_freq
+
+gen cat_odour_freq= 0
+replace cat_odour_freq=1 if (odour==1 & odour_freq>2 & odour_freq<.) | (odour==1 & odour_freq==.) 
+replace cat_odour_freq=2 if odour==1 & odour_freq<3 & odour_freq<.
+la var cat_odour_freq "Odour categorical for frequency"
+
+la def cat_odour_freq ///
+	0 "No odour" ///
+	1 "Odour with low frequency" ///
+	2 "Odour with high frequency"
+la val cat_odour_freq cat_odour_freq
 
 
 *--------------------------------------------------
