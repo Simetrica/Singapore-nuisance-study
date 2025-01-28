@@ -79,7 +79,9 @@ eststo: reg lfsato $controlshealth dust noise odour [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth dust i.cat_dust_freq noise i.cat_noise_freq odour i.cat_odour_freq [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.cat_dust_intensity i.cat_noise_intensity i.cat_odour_intensity [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.cat_dust_freq i.cat_dust_intensity i.cat_noise_freq i.cat_noise_intensity i.cat_odour_freq i.cat_odour_intensity [pw=rakedweight], vce(r)
-
+eststo: reg lfsato $controlshealth i.dust_combined_cat i.noise_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
 excel, name("Regressions") $esttab_opts replace
 eststo clear
 
@@ -90,6 +92,10 @@ putexcel_wait set "$RESULTS", sheet("General & distance regs v2", replace) modif
 eststo: reg lfsato $controlshealth dust noise odour i.industry_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth dust##industry_distance noise##industry_distance odour##industry_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth 0.dust##industry_distance 0.noise##industry_distance 0.odour##industry_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth ib6.industry_distance i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_combined_distance [pw=rakedweight], vce(r)
 /*
 eststo: reg lfsato $controlshealth cat_dust_freq##industry_distance cat_noise_freq##industry_distance cat_odour_freq##industry_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth cat_dust_intensity##industry_distance cat_noise_intensity##industry_distance cat_odour_intensity##industry_distance [pw=rakedweight], vce(r)

@@ -686,39 +686,62 @@ la def odour_combined_dum ///
 la val odour_combined_dum odour_combined_dum
 
 // Categorical for the combination of high frequency and high intensity
-gen dust_combined_cat=0
-replace dust_combined_cat=1 if (dust_highfreq==1 & dust_highintensity==0) | (dust_highfreq==0 & dust_highintensity==1)
+gen dust_combined_cat=dust
 replace dust_combined_cat=2 if dust_highfreq==1 & dust_highintensity==1
 la var dust_combined_cat "Categorical dust for high frequency and intensity"
 
 la def dust_cat ///
 	0 "No dust experienced" ///
-	1 "Dust and either high intensity or high frequency" ///
+	1 "Dust and either low intensity or low frequency" ///
 	2 "Dust and high intensity and frequency" 
 la val dust_combined_cat dust_cat
 
-gen noise_combined_cat=0
-replace noise_combined_cat=1 if (noise_highfreq==1 & noise_highintensity==0) | (noise_highfreq==0 & noise_highintensity==1)
+gen noise_combined_cat=noise
 replace noise_combined_cat=2 if noise_highfreq==1 & noise_highintensity==1
 la var noise_combined_cat "Categorical noise for high frequency and intensity"
 
 la def noise_cat ///
 	0 "No noise experienced" ///
-	1 "Noise and either high intensity or high frequency" ///
+	1 "Noise and either low intensity or low frequency" ///
 	2 "Noise and high intensity and frequency" 
 la val noise_combined_cat noise_cat
 
-gen odour_combined_cat=0
-replace odour_combined_cat=1 if (odour_highfreq==1 & odour_highintensity==0) | (odour_highfreq==0 & odour_highintensity==1)
+gen odour_combined_cat=odour
 replace odour_combined_cat=2 if odour_highfreq==1 & odour_highintensity==1
 la var odour_combined_cat "Categorical odour for high frequency and intensity"
 
 la def odour_cat ///
 	0 "No odour experienced" ///
-	1 "Odour and either high intensity or high frequency" ///
+	1 "Odour and either low intensity or low frequency" ///
 	2 "Odour and high intensity and frequency" 
 la val odour_combined_cat odour_cat
 
+// Each source interaction with distance
+gen dust_distance=dust
+replace dust_distance=7-industry_distance if dust==1 & industry_distance<6
+la def dust_distance_lbl ///
+	0 "No dust experienced" ///
+	1 "Dust and More than 2km from industry" ///
+	2 "Dust and 1-2km from industry" ///
+	3 "Dust and 500m-1km from industry" ///
+	4 "Dust and 100-500m from industry" ///
+	5 "Dust and 50-100m from industry" ///
+	6 "Dust and Less than 50m from industry"
+la val odour_combined_cat odour_cat
+
+gen noise_distance=noise
+replace noise_distance=7-industry_distance if noise==1 & industry_distance<6
+
+gen odour_distance=odour
+replace odour_distance=7-industry_distance if odour==1 & industry_distance<6
+
+//Nuisance sources combined
+gen nuisance=(dust==1|noise==1|odour==1)
+gen nuisance_combined_cat=(dust_combined_cat==2|noise_combined_cat==2|odour_combined_cat==2)
+gen nuisance_distance=nuisance
+replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<6
+gen nuisance_combined_distance=nuisance_combined_cat
+replace nuisance_combined_distance=7-industry_distance if nuisance_combined_cat==1 & industry_distance<6
 
 *---------------------
 * Alternative 2
