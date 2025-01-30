@@ -686,39 +686,45 @@ la def odour_combined_dum ///
 la val odour_combined_dum odour_combined_dum
 
 // Categorical for the combination of high frequency and high intensity
-gen dust_combined_cat=dust
-replace dust_combined_cat=2 if dust_highfreq==1 & dust_highintensity==1
+gen dust_combined_cat=dust*2
+replace dust_combined_cat=1 if dust==1 & dust_highfreq!=1 & dust_highintensity!=1
+replace dust_combined_cat=3 if dust_highfreq==1 & dust_highintensity==1
 la var dust_combined_cat "Categorical dust for high frequency and intensity"
 
 la def dust_cat ///
 	0 "No dust experienced" ///
-	1 "Dust and either low intensity or low frequency" ///
-	2 "Dust and high intensity and frequency" 
+	1 "Dust and low intensity and low frequency" ///
+	2 "Dust and either low intensity or low frequency" ///
+	3 "Dust and high intensity and frequency" 
 la val dust_combined_cat dust_cat
 
-gen noise_combined_cat=noise
-replace noise_combined_cat=2 if noise_highfreq==1 & noise_highintensity==1
+gen noise_combined_cat=noise*2
+replace noise_combined_cat=1 if noise==1 & noise_highfreq!=1 & noise_highintensity!=1
+replace noise_combined_cat=3 if noise_highfreq==1 & noise_highintensity==1
 la var noise_combined_cat "Categorical noise for high frequency and intensity"
 
 la def noise_cat ///
 	0 "No noise experienced" ///
-	1 "Noise and either low intensity or low frequency" ///
-	2 "Noise and high intensity and frequency" 
+	1 "Noise and low intensity and low frequency" ///
+	2 "Noise and either low intensity or low frequency" ///
+	3 "Noise and high intensity and frequency" 
 la val noise_combined_cat noise_cat
 
-gen odour_combined_cat=odour
-replace odour_combined_cat=2 if odour_highfreq==1 & odour_highintensity==1
+gen odour_combined_cat=odour*2
+replace odour_combined_cat=1 if odour==1 & odour_highfreq!=1 & odour_highintensity!=1
+replace odour_combined_cat=3 if odour_highfreq==1 & odour_highintensity==1
 la var odour_combined_cat "Categorical odour for high frequency and intensity"
 
 la def odour_cat ///
 	0 "No odour experienced" ///
-	1 "Odour and either low intensity or low frequency" ///
-	2 "Odour and high intensity and frequency" 
+	1 "Odour and low intensity and low frequency" ///
+	2 "Odour and either low intensity or low frequency" ///
+	3 "Odour and high intensity and frequency" 
 la val odour_combined_cat odour_cat
 
 // Each source interaction with distance
-gen dust_distance=dust
-replace dust_distance=7-industry_distance if dust==1 & industry_distance<6
+gen dust_distance=dust_combined_dum
+replace dust_distance=7-industry_distance if dust_combined_dum==1 & industry_distance<=6
 la def dust_distance_lbl ///
 	0 "No dust experienced" ///
 	1 "Dust and More than 2km from industry" ///
@@ -727,21 +733,68 @@ la def dust_distance_lbl ///
 	4 "Dust and 100-500m from industry" ///
 	5 "Dust and 50-100m from industry" ///
 	6 "Dust and Less than 50m from industry"
-la val odour_combined_cat odour_cat
+la val dust_distance dust_distance_lbl
 
-gen noise_distance=noise
-replace noise_distance=7-industry_distance if noise==1 & industry_distance<6
+gen noise_distance=noise_combined_dum
+replace noise_distance=7-industry_distance if noise_combined_dum==1 & industry_distance<=6
+la def noise_distance_lbl ///
+	0 "No noise experienced" ///
+	1 "Noise and More than 2km from industry" ///
+	2 "Noise and 1-2km from industry" ///
+	3 "Noise and 500m-1km from industry" ///
+	4 "Noise and 100-500m from industry" ///
+	5 "Noise and 50-100m from industry" ///
+	6 "Noise and Less than 50m from industry"
+la val noise_distance noise_distance_lbl
 
-gen odour_distance=odour
-replace odour_distance=7-industry_distance if odour==1 & industry_distance<6
+gen odour_distance=odour_combined_dum
+replace odour_distance=7-industry_distance if odour_combined_dum==1 & industry_distance<=6
+la def odour_distance_lbl ///
+	0 "No odour experienced" ///
+	1 "Odour and More than 2km from industry" ///
+	2 "Odour and 1-2km from industry" ///
+	3 "Odour and 500m-1km from industry" ///
+	4 "Odour and 100-500m from industry" ///
+	5 "Odour and 50-100m from industry" ///
+	6 "Odour and Less than 50m from industry"
+la val odour_distance odour_distance_lbl
 
 //Nuisance sources combined
 gen nuisance=(dust==1|noise==1|odour==1)
+la def nuisance_lbl ///
+	0 "No nuisance experienced" ///
+	1 "At least one nuisance"
+la val nuisance nuisance_lbl
+
 gen nuisance_combined_cat=(dust_combined_cat==2|noise_combined_cat==2|odour_combined_cat==2)
+la def nuisance_combined_lbl ///
+	0 "No frequent/intense nuisance experienced" ///
+	1 "At least one frequent/intense nuisance"
+la val nuisance_combined_cat nuisance_combined_lbl
+
 gen nuisance_distance=nuisance
 replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<6
+la def nuisance_distance_lbl ///
+	0 "No nuisance experienced" ///
+	1 "At least one nuisance and More than 2km from industry" ///
+	2 "At least one nuisance and 1-2km from industry" ///
+	3 "At least one nuisance and 500m-1km from industry" ///
+	4 "At least one nuisance and 100-500m from industry" ///
+	5 "At least one nuisance and 50-100m from industry" ///
+	6 "At least one nuisance and Less than 50m from industry"
+la val nuisance_distance nuisance_distance_lbl
+
 gen nuisance_combined_distance=nuisance_combined_cat
 replace nuisance_combined_distance=7-industry_distance if nuisance_combined_cat==1 & industry_distance<6
+la def nuisance_combined_distance_lbl ///
+	0 "No frequent/intense nuisance experienced" ///
+	1 "At least one frequent/intense nuisance and More than 2km from industry" ///
+	2 "At least one frequent/intense nuisance and 1-2km from industry" ///
+	3 "At least one frequent/intense nuisance and 500m-1km from industry" ///
+	4 "At least one frequent/intense nuisance and 100-500m from industry" ///
+	5 "At least one frequent/intense nuisance and 50-100m from industry" ///
+	6 "At least one frequent/intense nuisance and Less than 50m from industry"
+la val nuisance_combined_distance nuisance_combined_distance_lbl
 
 *---------------------
 * Alternative 2
