@@ -694,7 +694,7 @@ la var dust_combined_cat "Categorical dust for high frequency and intensity"
 la def dust_cat ///
 	0 "No dust experienced" ///
 	1 "Dust and low intensity and low frequency" ///
-	2 "Dust and either low intensity or low frequency" ///
+	2 "Dust and either high intensity or high frequency" ///
 	3 "Dust and high intensity and frequency" 
 la val dust_combined_cat dust_cat
 
@@ -706,7 +706,7 @@ la var noise_combined_cat "Categorical noise for high frequency and intensity"
 la def noise_cat ///
 	0 "No noise experienced" ///
 	1 "Noise and low intensity and low frequency" ///
-	2 "Noise and either low intensity or low frequency" ///
+	2 "Noise and either high intensity or high frequency" ///
 	3 "Noise and high intensity and frequency" 
 la val noise_combined_cat noise_cat
 
@@ -718,7 +718,7 @@ la var odour_combined_cat "Categorical odour for high frequency and intensity"
 la def odour_cat ///
 	0 "No odour experienced" ///
 	1 "Odour and low intensity and low frequency" ///
-	2 "Odour and either low intensity or low frequency" ///
+	2 "Odour and either high intensity or high frequency" ///
 	3 "Odour and high intensity and frequency" 
 la val odour_combined_cat odour_cat
 
