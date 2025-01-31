@@ -72,17 +72,30 @@ putexcel_wait set "$RESULTS", sheet("General regressions v2", replace) modify
 global esttab_opts not label star(* 0.10 ** 0.05 *** 0.01) mtitles stats(N r2, labels("N" "R-sq"))
 
 global controlshealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
-    source_constrsites source_roadtraffic source_other roads_distance transport_distance physicalhealth mentalhealth 
-
+    source_constrsites source_roadtraffic source_other roads_distance transport_distance physicalhealth mentalhealth
+eststo clear
 
 eststo: reg lfsato $controlshealth dust noise odour [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.cat_dust_freq i.cat_noise_freq i.cat_odour_freq [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.cat_dust_intensity i.cat_noise_intensity i.cat_odour_intensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.cat_dust_freq i.cat_dust_intensity i.cat_noise_freq i.cat_noise_intensity i.cat_odour_freq i.cat_odour_intensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.dust_combined_dum i.noise_combined_dum i.odour_combined_dum [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.dust_combined_cat i.noise_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.nuisance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_dum [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_combined [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance i.sum_nuisance_combined [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
 excel, name("Regressions") $esttab_opts replace
 eststo clear
 

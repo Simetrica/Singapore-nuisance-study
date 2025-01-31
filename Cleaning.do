@@ -761,34 +761,59 @@ la val odour_distance odour_distance_lbl
 
 //Nuisance sources combined
 gen nuisance=(dust==1|noise==1|odour==1)
+la var nuisance "Any of the three nuisances"
 la def nuisance_lbl ///
 	0 "No nuisance experienced" ///
 	1 "At least one nuisance"
 la val nuisance nuisance_lbl
 
-gen nuisance_combined_dum=(dust_combined_cat>=2|noise_combined_cat>=2|odour_combined_cat>=2)
-la def nuisance_combined_lbl ///
-	0 "No frequent/intense nuisance experienced" ///
-	1 "At least one frequent/intense nuisance"
-la val nuisance_combined_dum nuisance_combined_lbl
+gen sum_nuisance=dust+noise+odour
+la var sum_nuisance "Number of nuisances experienced"
 
+gen sum_nuisance_combined=dust_combined_dum+noise_combined_dum+odour_combined_dum
+la var sum_nuisance_combined "Number of high frequency and high intensity nuisances experienced"
 
-// Generating a categorical variable for having at least one,  or two or all three frequent/intense nuisance
-gen nuisance_combined_cat=(dust_combined_cat>=2|noise_combined_cat>=2|odour_combined_cat>=2)
-replace nuisance_combined_cat=2 if (dust_combined_cat>=2 & noise_combined_cat>=2) | (dust_combined_cat>=2 & odour_combined_cat>=2) | (noise_combined_cat>=2 & odour_combined_cat>=2)
-replace nuisance_combined_cat=3 if dust_combined_cat>=2 & noise_combined_cat>=2 & odour_combined_cat>=2
+gen nuisance_combined_dum=(sum_nuisance_combined>=1)
+la var nuisance_combined_dum "Dummy any nuisance with high frequency and intensity"
+la def nuisance_combined_dum_lbl ///
+	0 "No frequent and intense nuisance experienced" ///
+	1 "At least one frequent and intense nuisance"
+la val nuisance_combined_dum nuisance_combined_dum_lbl
 
+gen nuisance_combined_cat=nuisance
+replace nuisance_combined_cat=2 if sum_nuisance_combined==1
+replace nuisance_combined_cat=3 if sum_nuisance_combined>=2
+la var nuisance_combined_cat "Categorical any nuisance by frequency and intensity"
 la def nuisance_combined_cat_lbl ///
-	0 "No frequent/intense nuisance experienced" ///
-	1 "At least one frequent/intense nuisance" ///
-	2 "At least two frequent/intense nuisance " ///
-	3 "All three frequent/intense nuisance"
+	0 "No frequent and intense nuisance experienced" ///
+	1 "Some nuisance but none that is intense and frequent" ///
+	2 "Some nuisance with one frequent and intense" ///
+	3 "At least two frequent and intense nuisances"
 la val nuisance_combined_cat nuisance_combined_cat_lbl
 
+*Accounting for effects response
+gen effect_sum = effect_sleep + effect_recreation + effect_focus + effect_housework + effect_windows + effect_mood + effect_symptoms + effect_other
 
+gen nuisance_effect=nuisance
+replace nuisance_effect=0 if effect_none==1 | effect_sum==0
+
+gen nuisance_combined_dum_effect=nuisance_combined_dum
+replace nuisance_combined_dum_effect=0 if effect_none==1 | effect_sum==0
+
+gen nuisance_combined_cat_effect=nuisance_combined_cat
+replace nuisance_combined_cat_effect=0 if effect_none==1 | effect_sum==0
+
+gen sum_nuisance_effect=sum_nuisance
+replace sum_nuisance_effect=0 if effect_none==1 | effect_sum==0
+
+gen sum_nuisance_combined_effect=sum_nuisance_combined
+replace sum_nuisance_combined_effect=0 if effect_none==1 | effect_sum==0
+
+***
 
 gen nuisance_distance=nuisance
-replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<6
+replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<=6
+la var nuisance_distance "Distance from any nuisance"
 la def nuisance_distance_lbl ///
 	0 "No nuisance experienced" ///
 	1 "At least one nuisance and More than 2km from industry" ///
@@ -799,8 +824,9 @@ la def nuisance_distance_lbl ///
 	6 "At least one nuisance and Less than 50m from industry"
 la val nuisance_distance nuisance_distance_lbl
 
-gen nuisance_combined_distance=nuisance_combined_cat
-replace nuisance_combined_distance=7-industry_distance if nuisance_combined_cat==1 & industry_distance<6
+gen nuisance_combined_distance=nuisance_combined_dum
+replace nuisance_combined_distance=7-industry_distance if nuisance_combined_cat==1 & industry_distance<=6
+la var nuisance_combined_distance "Distance from nuisance with high frequency and intensity"
 la def nuisance_combined_distance_lbl ///
 	0 "No frequent/intense nuisance experienced" ///
 	1 "At least one frequent/intense nuisance and More than 2km from industry" ///
