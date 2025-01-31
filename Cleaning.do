@@ -766,11 +766,26 @@ la def nuisance_lbl ///
 	1 "At least one nuisance"
 la val nuisance nuisance_lbl
 
-gen nuisance_combined_cat=(dust_combined_cat==2|noise_combined_cat==2|odour_combined_cat==2)
+gen nuisance_combined_dum=(dust_combined_cat>=2|noise_combined_cat>=2|odour_combined_cat>=2)
 la def nuisance_combined_lbl ///
 	0 "No frequent/intense nuisance experienced" ///
 	1 "At least one frequent/intense nuisance"
-la val nuisance_combined_cat nuisance_combined_lbl
+la val nuisance_combined_dum nuisance_combined_lbl
+
+
+// Generating a categorical variable for having at least one,  or two or all three frequent/intense nuisance
+gen nuisance_combined_cat=(dust_combined_cat>=2|noise_combined_cat>=2|odour_combined_cat>=2)
+replace nuisance_combined_cat=2 if (dust_combined_cat>=2 & noise_combined_cat>=2) | (dust_combined_cat>=2 & odour_combined_cat>=2) | (noise_combined_cat>=2 & odour_combined_cat>=2)
+replace nuisance_combined_cat=3 if dust_combined_cat>=2 & noise_combined_cat>=2 & odour_combined_cat>=2
+
+la def nuisance_combined_cat_lbl ///
+	0 "No frequent/intense nuisance experienced" ///
+	1 "At least one frequent/intense nuisance" ///
+	2 "At least two frequent/intense nuisance " ///
+	3 "All three frequent/intense nuisance"
+la val nuisance_combined_cat nuisance_combined_cat_lbl
+
+
 
 gen nuisance_distance=nuisance
 replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<6
