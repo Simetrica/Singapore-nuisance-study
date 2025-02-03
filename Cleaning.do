@@ -770,6 +770,7 @@ la val nuisance nuisance_lbl
 gen sum_nuisance=dust+noise+odour
 la var sum_nuisance "Number of nuisances experienced"
 la def sum_nuisance ///
+	0 "No nuisance experienced" ///
 	1 "One nuisance experienced" ///
 	2 "Two nuisance experienced" ///
 	3 "Three nuisance experienced" 
@@ -778,6 +779,7 @@ la val sum_nuisance sum_nuisance
 gen sum_nuisance_combined=dust_combined_dum+noise_combined_dum+odour_combined_dum
 la var sum_nuisance_combined "Number of high frequency and high intensity nuisances experienced"
 la def sum_nuisance_combined ///
+	0 "No frequent or intense nuisance experienced" ///
 	1 "One high frequency and intense nuisance experienced" ///
 	2 "Two high frequency and intense nuisances experienced" ///
 	3 "Three high frequency and intense nuisances experienced" 
