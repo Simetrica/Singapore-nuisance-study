@@ -61,7 +61,7 @@ global rownumber = 1
 
 putexcel_wait ///
     A$rownumber = ("Variable") ///
-    B$rownumber = ("Overall Mean") ///
+    B$rownumber = ("Overall Coefficient") ///
     C$rownumber = ("Overall SE") ///
     D$rownumber = ("Overall P-value") ///
     E$rownumber = ("Overall N0") ///
