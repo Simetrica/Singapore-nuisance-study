@@ -103,15 +103,23 @@ eststo clear
 putexcel_wait set "$RESULTS", sheet("General & distance regs v2", replace) modify
 
 * Variables of interest with the industry_distance interactions
-eststo: reg lfsato $controlshealth dust noise odour i.industry_distance [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth dust##industry_distance noise##industry_distance odour##industry_distance [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth 0.dust##industry_distance 0.noise##industry_distance 0.odour##industry_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust noise odour ib6.industry_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust##ib6.industry_distance noise##ib6.industry_distance odour##ib6.industry_distance [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth 0.dust##industry_distance 0.noise##industry_distance 0.odour##industry_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.nuisance_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.nuisance_combined_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth ib6.industry_distance i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_distance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_combined_distance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_2km##i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_1km##i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_500m##i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_100m##i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_2km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_1km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_500m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.industry_distance_100m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
 excel, name("General & distance regs v2") $esttab_opts replace
 
 /*

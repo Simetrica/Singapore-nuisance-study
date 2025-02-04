@@ -837,6 +837,21 @@ la def nuisance_combined_distance_lbl ///
 	6 "At least one frequent/intense nuisance and Less than 50m from industry"
 la val nuisance_combined_distance nuisance_combined_distance_lbl
 
+gen industry_distance2 = industry_distance
+replace industry_distance2=9 if industry_distance==.
+
+gen industry_distance_2km = (industry_distance<=5)
+replace industry_distance_2km=9 if industry_distance==.
+
+gen industry_distance_1km = (industry_distance<=4)
+replace industry_distance_1km=9 if industry_distance==.
+
+gen industry_distance_500m = (industry_distance<=3)
+replace industry_distance_500m=9 if industry_distance==.
+
+gen industry_distance_100m = (industry_distance<=2)
+replace industry_distance_100m=9 if industry_distance==.
+
 *---------------------
 * Alternative 2
 *---------------------
