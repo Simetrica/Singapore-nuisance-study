@@ -769,9 +769,21 @@ la val nuisance nuisance_lbl
 
 gen sum_nuisance=dust+noise+odour
 la var sum_nuisance "Number of nuisances experienced"
+la def sum_nuisance ///
+	0 "No nuisance experienced" ///
+	1 "One nuisance experienced" ///
+	2 "Two nuisance experienced" ///
+	3 "Three nuisance experienced" 
+la val sum_nuisance sum_nuisance
 
 gen sum_nuisance_combined=dust_combined_dum+noise_combined_dum+odour_combined_dum
 la var sum_nuisance_combined "Number of high frequency and high intensity nuisances experienced"
+la def sum_nuisance_combined ///
+	0 "No frequent or intense nuisance experienced" ///
+	1 "One high frequency and intense nuisance experienced" ///
+	2 "Two high frequency and intense nuisances experienced" ///
+	3 "Three high frequency and intense nuisances experienced" 
+la val sum_nuisance_combined sum_nuisance_combined
 
 gen nuisance_combined_dum=(sum_nuisance_combined>=1)
 la var nuisance_combined_dum "Dummy any nuisance with high frequency and intensity"
@@ -796,18 +808,51 @@ gen effect_sum = effect_sleep + effect_recreation + effect_focus + effect_housew
 
 gen nuisance_effect=nuisance
 replace nuisance_effect=0 if effect_none==1 | effect_sum==0
+la var nuisance_effect "Experiencing an effect through any of the three nuisances"
+la def nuisance_effect ///
+	0 "No effect through any nuisance" ///
+	1 "Effect through any nuisance"
+la val nuisance_effect nuisance_effect
 
 gen nuisance_combined_dum_effect=nuisance_combined_dum
 replace nuisance_combined_dum_effect=0 if effect_none==1 | effect_sum==0
+la var nuisance_combined_dum_effect "Experiencing an effect through high frequency and intense nuisances"
+la def nuisance_combined_dum_effect ///
+	0 "No effect through any high frequency and intense nuisance" ///
+	1 "Effect through any high and intense nuisance"
+la val nuisance_combined_dum_effect nuisance_combined_dum_effect
 
 gen nuisance_combined_cat_effect=nuisance_combined_cat
 replace nuisance_combined_cat_effect=0 if effect_none==1 | effect_sum==0
+la var nuisance_combined_cat_effect "Effect with nuisances by frequency and intensity"
+la def nuisance_combined_cat_effect ///
+	0 "No effect from any frequent and intense nuisance experienced" ///
+	1 "Effect from some but none intense and frequent nuisance" ///
+	2 "Effect from some with at least one frequent and intense nuisance" ///
+	3 "Effect from at least two frequent and intense nuisances"
+la val nuisance_combined_cat_effect nuisance_combined_cat_effect
 
 gen sum_nuisance_effect=sum_nuisance
 replace sum_nuisance_effect=0 if effect_none==1 | effect_sum==0
+la var sum_nuisance_effect "Effect with the number of nuisances"
+la def sum_nuisance_effect ///
+	0 "No effect from any nuisances experienced" ///
+	1 "Effect from one nuisance" ///
+	2 "Effect from two nuisances" ///
+	3 "Effect from three nuisances"
+la val sum_nuisance_effect sum_nuisance_effect
+
 
 gen sum_nuisance_combined_effect=sum_nuisance_combined
 replace sum_nuisance_combined_effect=0 if effect_none==1 | effect_sum==0
+la var sum_nuisance_combined_effect "Effect with the number of frequent and intense nuisances"
+la def sum_nuisance_combined_effect ///
+	0 "No effect from any frequent and intense nuisance experienced" ///
+	1 "Effect from one frequent and intense nuisance" ///
+	2 "Effect from two frequent and intensen nuisances" ///
+	3 "Effect from three frequent and intense nuisances"
+la val sum_nuisance_combined_effect sum_nuisance_combined_effect
+
 
 ***
 

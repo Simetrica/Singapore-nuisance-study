@@ -17,62 +17,16 @@ global RESULTS "$OUTPUT/Singapore Nuisance - Results.xlsx"
 adopath ++ "$GIT/stata_functions"
 
 *----------------------------------------------------
-* Wellbeing values
+* Regression results
 *----------------------------------------------------
 use "$OUTPUT/Data/Singapore Nuisance study survey data (clean).dta", clear
-
-* Set up the Excel file and sheet for Descriptives
-putexcel_wait set "$RESULTS", sheet("Descriptives") modify 
-
-* Adding a local for the rownumber (1 is for the names)
-local rownumber = 2
-
-global descriptives dust noise odour dust_highfreq noise_highfreq odour_highfreq dust_highintensity noise_highintensity odour_highintensity dust_freq noise_freq odour_freq dust_intensity noise_intensity odour_intensity ///
-    dust_combined_dum noise_combined_dum odour_combined_dum dust_combined_cat noise_combined_cat odour_combined_cat cat_dust_freq cat_dust_intensity cat_noise_freq cat_noise_intensity cat_odour_freq cat_odour_intensity ///
-    industry_distance roads_distance transport_distance living_close_1km living_close_500m vulnerable
-
-* Setting column headers
-putexcel A1 = "Variable Name" B1 = "Category" C1 = "Frequency" D1 = "Percent" 
-
-* Loop over the list of variables
-foreach var in $descriptives {
-    putexcel A`rownumber' = "`var'" 
-    ta `var', matcell(freq) matrow(names)
-    local total = 0
-    forval i = 1/`=rowsof(freq)' {
-        local total = `total' + freq[`i',1]
-    }
-    
-    * In order to write the categories in column B, frequencies in column C, and adding the percentages in column D
-    local rowcounter = `rownumber' + 1  // starts writing from the next row so no overwriting the previous
-    forval i = 1/`=rowsof(freq)' {
-        putexcel B`rowcounter' = names[`i',1] 
-        putexcel C`rowcounter' = freq[`i',1] 
-        
-        * Calculate and write the percentage in column D
-        local percent = (freq[`i',1] / `total') * 100
-        putexcel D`rowcounter' = `percent' 
-        
-        * Increment the row number by 1 for the next category
-        local rowcounter = `rowcounter' + 1
-    }
-    
-    * Write the total frequency at the end of each table in column C
-    putexcel B`rowcounter' = "Total" 
-    putexcel C`rowcounter' = `total' 
-    
-    * Increment the row number by 2 (to leave a blank row between tables)
-    local rownumber = `rowcounter' + 2
-}
-
-
 
 putexcel_wait set "$RESULTS", sheet("General regressions v2", replace) modify
 
 global esttab_opts not label star(* 0.10 ** 0.05 *** 0.01) mtitles stats(N r2, labels("N" "R-sq"))
 
 global controlshealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
-    source_constrsites source_roadtraffic source_other roads_distance transport_distance physicalhealth mentalhealth
+    source_constrsites source_roadtraffic /*source_other*/ roads_distance transport_distance physicalhealth mentalhealth
 eststo clear
 
 eststo: reg lfsato $controlshealth dust noise odour [pw=rakedweight], vce(r)
@@ -99,6 +53,170 @@ eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined
 excel, name("Regressions") $esttab_opts replace
 eststo clear
 
+// Code in order to save the coefficient, se, p-value, and sample sizes
+
+putexcel_wait set "$RESULTS", sheet("Sample sizes", replace) modify
+
+global rownumber = 1
+
+putexcel_wait ///
+    A$rownumber = ("Variable") ///
+    B$rownumber = ("Overall Coefficient") ///
+    C$rownumber = ("Overall SE") ///
+    D$rownumber = ("Overall P-value") ///
+    E$rownumber = ("Overall N0") ///
+    F$rownumber = ("Overall N1")
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+// Defining the program to export the coefficients, SE, and p-values from our regressions
+program define overall_coeff
+    scalar pvalue = round(2 * (1 - normal(abs(_b[`1']/_se[`1']))),0.001)
+    // Extract sample size
+    count if `1' == 0 & e(sample)
+    local no0 = r(N)
+    count if `1' == 1 & e(sample)
+    local no1 = r(N)
+    putexcel_wait ///
+        A$rownumber = ("`1'") ///
+        B$rownumber = _b[`1'] ///
+        C$rownumber = _se[`1'] ///
+        D$rownumber = pvalue ///
+        E$rownumber = `no0' ///
+        F$rownumber = `no1' 
+    global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+end
+
+qui eststo: reg lfsato $controlshealth dust noise odour [pw=rakedweight], vce(r)
+overall_coeff dust
+overall_coeff noise
+overall_coeff odour
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.cat_dust_freq i.cat_noise_freq i.cat_odour_freq [pw=rakedweight], vce(r)
+overall_coeff `i'.cat_dust_freq 
+overall_coeff `i'.cat_noise_freq 
+overall_coeff `i'.cat_odour_freq
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.cat_dust_intensity i.cat_noise_intensity i.cat_odour_intensity [pw=rakedweight], vce(r)
+overall_coeff `i'.cat_dust_intensity
+overall_coeff `i'.cat_noise_intensity
+overall_coeff `i'.cat_odour_intensity
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth dust_combined_dum noise_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
+overall_coeff dust_combined_dum
+overall_coeff noise_combined_dum
+overall_coeff odour_combined_dum
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.dust_combined_cat i.noise_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
+overall_coeff `i'.dust_combined_cat
+overall_coeff `i'.noise_combined_cat
+overall_coeff `i'.odour_combined_cat
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance [pw=rakedweight], vce(r)
+overall_coeff nuisance
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff nuisance_combined_dum
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff nuisance
+overall_coeff nuisance_combined_dum
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_combined_cat
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+*qui eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
+qui eststo: reg lfsato $controlshealth i.sum_nuisance [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_combined [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_combined
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance i.sum_nuisance_combined [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance
+overall_coeff `i'.sum_nuisance_combined
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance_effect [pw=rakedweight], vce(r)
+overall_coeff nuisance_effect
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+overall_coeff nuisance_combined_dum_effect
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth nuisance_effect nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+overall_coeff nuisance_effect
+overall_coeff nuisance_combined_dum_effect
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_combined_cat_effect
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+*qui eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_effect
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_combined_effect
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=1/3 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_effect
+overall_coeff `i'.sum_nuisance_combined_effect
+}
 
 putexcel_wait set "$RESULTS", sheet("General & distance regs v2", replace) modify
 
