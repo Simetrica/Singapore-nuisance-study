@@ -244,31 +244,177 @@ eststo: reg lfsato $controlshealth ib1.industry_distance_100m#i.nuisance_combine
 eststo: reg lfsato $controlshealth ib1.industry_distance_100m#i.nuisance_combined_dum [pw=rakedweight]  if industry_distance_100m!=9, vce(r)
 excel, name("General & distance regs v2") $esttab_opts replace
 
-/*
-eststo: reg lfsato $controlshealth cat_dust_freq##industry_distance cat_noise_freq##industry_distance cat_odour_freq##industry_distance [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth cat_dust_intensity##industry_distance cat_noise_intensity##industry_distance cat_odour_intensity##industry_distance [pw=rakedweight], vce(r)
-
-* Combination of high frequency and high intensity as a dummy, where 1 is for high intensity & frequency, and 0 otherwise
-eststo: reg lfsato $controlshealth dust_combined_dum##industry_distance noise_combined_dum##industry_distance odour_combined_dum##industry_distance [pw=rakedweight], vce(r)
-
-* Combination of high frequency and high intensity as a categorical, where 2 is for high intensity & frequency, 1 for either high intensity or frequency and 0 otherwise
-eststo: reg lfsato $controlshealth dust_combined_cat##industry_distance noise_combined_cat##industry_distance odour_combined_cat##industry_distance [pw=rakedweight], vce(r)
-
-excel, name("Regressions") $esttab_opts replace
-eststo clear
 
 
-putexcel_wait set "$RESULTS", sheet("General & vulnerable regs", replace) modify
+putexcel_wait set "$RESULTS", sheet("Sample sizes distance", replace) modify
 
-* Variables of interest with the vulnerable variable interactions
-eststo: reg lfsato $controlshealth cat_dust_freq##vulnerable cat_noise_freq##vulnerable cat_odour_freq##vulnerable [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth cat_dust_intensity##vulnerable cat_noise_intensity##vulnerable cat_odour_intensity##vulnerable [pw=rakedweight], vce(r)
+global rownumber = 1
 
-* Combination of high frequency and high intensity as a dummy, where 1 is for high intensity & frequency, and 0 otherwise
-eststo: reg lfsato $controlshealth dust_combined_dum##vulnerable noise_combined_dum##vulnerable odour_combined_dum##vulnerable [pw=rakedweight], vce(r)
+putexcel_wait ///
+    A$rownumber = ("Variable") ///
+    B$rownumber = ("Overall Coefficient") ///
+    C$rownumber = ("Overall SE") ///
+    D$rownumber = ("Overall P-value") ///
+    E$rownumber = ("Overall N0") ///
+    F$rownumber = ("Overall N1")
 
-* Combination of high frequency and high intensity as a categorical, where 2 is for high intensity & frequency, 1 for either high intensity or frequency and 0 otherwise
-eststo: reg lfsato $controlshealth dust_combined_cat##vulnerable noise_combined_cat##vulnerable odour_combined_cat##vulnerable [pw=rakedweight], vce(r)
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-excel, name("Regressions") $esttab_opts replace
-*/
+qui eststo: reg lfsato $controlshealth dust noise odour ib6.industry_distance [pw=rakedweight], vce(r)
+overall_coeff dust
+overall_coeff noise
+overall_coeff odour
+
+forval i=1/6 {
+qui eststo: reg lfsato $controlshealth dust noise odour ib6.industry_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6{
+qui eststo: reg lfsato $controlshealth i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.dust_distance
+overall_coeff `i'.noise_distance
+overall_coeff `i'.odour_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6 {
+qui eststo: reg lfsato $controlshealth i.nuisance_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6 {
+qui eststo: reg lfsato $controlshealth i.nuisance_combined_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_combined_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.dust_distance
+overall_coeff `i'.noise_distance
+overall_coeff `i'.odour_distance
+}
+
+forval i=1/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.dust_distance i.noise_distance i.odour_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_distance
+}
+
+forval i=1/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_combined_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.nuisance_combined_distance
+}
+
+forval i=1/6 {
+qui eststo: reg lfsato $controlshealth ib6.industry_distance i.nuisance_combined_distance [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+foreach i in 0 1 9 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_2km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance_2km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_2km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_2km#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_2km!=9, vce(r)
+overall_coeff `i'.industry_distance_2km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_2km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_2km#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_2km!=9 & industry_distance_2km+industry_distance_100m!=1, vce(r)
+overall_coeff `i'.industry_distance_2km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_2km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+foreach i in 0 1 9 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_1km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance_1km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_1km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_1km#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_1km!=9, vce(r)
+overall_coeff `i'.industry_distance_1km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_1km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_1km#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_1km!=9 & industry_distance_1km+industry_distance_100m!=1, vce(r)
+overall_coeff `i'.industry_distance_1km#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_1km#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+foreach i in 0 1 9 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_500m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance_500m#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_500m#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_500m#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_500m!=9, vce(r)
+overall_coeff `i'.industry_distance_500m#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_500m#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_500m#i.nuisance_combined_dum [pw=rakedweight] if industry_distance_500m!=9 & industry_distance_500m+industry_distance_100m!=1, vce(r)
+overall_coeff `i'.industry_distance_500m#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_500m#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+foreach i in 0 1 9 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_100m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff `i'.industry_distance_100m#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_100m#1.nuisance_combined_dum
+}
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+forval i=0/1 {
+qui eststo: reg lfsato $controlshealth ib1.industry_distance_100m#i.nuisance_combined_dum [pw=rakedweight]  if industry_distance_100m!=9, vce(r)
+overall_coeff `i'.industry_distance_100m#0.nuisance_combined_dum
+overall_coeff `i'.industry_distance_100m#1.nuisance_combined_dum
+}
