@@ -971,6 +971,81 @@ la def cat_odour_freq ///
 la val cat_odour_freq cat_odour_freq
 
 
+// For the crosstabs - categorical for the high frequency only across the 3 nuisances
+gen noise_freq_dum=0
+replace noise_freq_dum=1 if noise_highfreq==1
+la var noise_freq_dum "Dummy noise high frequency"
+
+la def noise_freq_dum ///
+	0 "No freq noise" ///
+	1 "Noise with high freq"
+la val noise_freq_dum noise_freq_dum
+
+gen dust_freq_dum=0
+replace dust_freq_dum=1 if dust_highfreq==1
+la var dust_freq_dum "Dummy dust high frequency"
+
+la def dust_freq_dum ///
+	0 "No freq dust" ///
+	1 "dust with high freq"
+la val dust_freq_dum dust_freq_dum
+
+gen odour_freq_dum=0
+replace odour_freq_dum=1 if odour_highfreq==1
+la var odour_freq_dum "Dummy odour high frequency"
+
+la def odour_freq_dum ///
+	0 "No freq odour" ///
+	1 "odour with high freq"
+la val odour_freq_dum odour_freq_dum
+
+gen sum_nuisance_freq=dust_freq_dum+noise_freq_dum+odour_freq_dum
+la var sum_nuisance_freq "Number of high frequency nuisances experienced"
+la def sum_nuisance_freq ///
+	0 "No frequent nuisance experienced" ///
+	1 "One high frequency nuisance experienced" ///
+	2 "Two high frequency nuisances experienced" ///
+	3 "Three high frequency nuisances experienced" 
+la val sum_nuisance_freq sum_nuisance_freq
+
+
+// categorical for the high intensity only across the 3 nuisances
+gen noise_intensity_dum=0
+replace noise_intensity_dum=1 if noise_highintensity==1
+la var noise_intensity_dum "Dummy noise high intensity"
+
+la def noise_intensity_dum ///
+	0 "No intensity noise" ///
+	1 "Noise with high intensity"
+la val noise_intensity_dum noise_intensity_dum
+
+gen dust_intensity_dum=0
+replace dust_intensity_dum=1 if dust_highintensity==1
+la var dust_intensity_dum "Dummy dust high intensity"
+
+la def dust_intensity_dum ///
+	0 "No intensity dust" ///
+	1 "dust with high intensity"
+la val dust_intensity_dum dust_intensity_dum
+
+gen odour_intensity_dum=0
+replace odour_intensity_dum=1 if odour_highintensity==1
+la var odour_intensity_dum "Dummy odour high intensity"
+
+la def odour_intensity_dum ///
+	0 "No intensity odour" ///
+	1 "odour with high intensity"
+la val odour_intensity_dum odour_intensity_dum
+
+gen sum_nuisance_intensity=dust_intensity_dum+noise_intensity_dum+odour_intensity_dum
+la var sum_nuisance_intensity "Number of high intensity nuisances experienced"
+la def sum_nuisance_intensity ///
+	0 "No intensity nuisance experienced" ///
+	1 "One high intensity nuisance experienced" ///
+	2 "Two high intensity nuisances experienced" ///
+	3 "Three high intensity nuisances experienced" 
+la val sum_nuisance_intensity sum_nuisance_intensity
+
 *--------------------------------------------------
 * Dropping
 *--------------------------------------------------
