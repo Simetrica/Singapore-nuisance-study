@@ -785,6 +785,18 @@ la def sum_nuisance_combined ///
 	3 "Three high frequency and intense nuisances experienced" 
 la val sum_nuisance_combined sum_nuisance_combined
 
+gen sum_nuisance_combined_v2=sum_nuisance_combined if sum_nuisance_combined<3
+replace sum_nuisance_combined_v2=2 if sum_nuisance_combined==3
+la var sum_nuisance_combined_v2 "Number of high frequency and high intensity nuisances experienced"
+la def sum_nuisance_combined_v2 ///
+	0 "No frequent or intense nuisance experienced" ///
+	1 "One high frequency and intense nuisance experienced" ///
+	2 "At least two high frequency and intense nuisances experienced" 
+la val sum_nuisance_combined_v2 sum_nuisance_combined_v2
+
+
+
+
 gen nuisance_combined_dum=(sum_nuisance_combined>=1)
 la var nuisance_combined_dum "Dummy any nuisance with high frequency and intensity"
 la def nuisance_combined_dum_lbl ///
