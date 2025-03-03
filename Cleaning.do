@@ -602,7 +602,7 @@ la val living_close_500m living_close_500m
 // High intensity vars for the three sources
 gen dust_highintensity= dust_intensity>2 if dust_intensity<.
 replace dust_highintensity=0 if dust_intensity==.
-la var dust_highintensity "Problematic to highly problematic"
+la var dust_highintensity "Dust problematic to highly problematic"
 
 la def dust_highintensity ///
 	0 "No intense dust" ///
@@ -612,7 +612,7 @@ la val dust_highintensity dust_highintensity
 
 gen noise_highintensity=noise_intensity>2 if noise_intensity<.
 replace noise_highintensity=0 if noise_intensity==.
-la var noise_highintensity "Problematic to highly problematic"
+la var noise_highintensity "Noise problematic to highly problematic"
 
 la def noise_highintensity ///
 	0 "No intense noise" ///
@@ -621,17 +621,46 @@ la val noise_highintensity noise_highintensity
 
 gen odour_highintensity=odour_intensity>2 if odour_intensity<.
 replace odour_highintensity=0 if odour_intensity==.
-la var odour_highintensity "Problematic to highly problematic"
+la var odour_highintensity "Odour problematic to highly problematic"
 
 la def odour_highintensity ///
 	0 "No intense odour" ///
 	1 "Odour with high intensity"
 la val odour_highintensity odour_highintensity
 
-// High frequency vars for the three sources
+// Highest intensity (highly problematic) vars for the three sources
+gen dust_hhintensity= dust_intensity>3 if dust_intensity<.
+replace dust_hhintensity=0 if dust_intensity==.
+la var dust_hhintensity "Dust highly problematic"
+
+la def dust_hhintensity ///
+	0 "No highly problematic dust" ///
+	1 "Dust with highly problematic intensity"
+la val dust_hhintensity dust_hhintensity
+
+
+gen noise_hhintensity=noise_intensity>3 if noise_intensity<.
+replace noise_hhintensity=0 if noise_intensity==.
+la var noise_hhintensity "Noise highly problematic"
+
+la def noise_hhintensity ///
+	0 "No highly problematic noise" ///
+	1 "Noise with highly problematic intensity"
+la val noise_hhintensity noise_hhintensity
+
+gen odour_hhintensity=odour_intensity>3 if odour_intensity<.
+replace odour_hhintensity=0 if odour_intensity==.
+la var odour_hhintensity "Odour highly problematic"
+
+la def odour_hhintensity ///
+	0 "No highly problematic odour" ///
+	1 "Odour with highly problematic intensity"
+la val odour_hhintensity odour_hhintensity
+
+// High frequency (at least once a week) vars for the three sources
 gen dust_highfreq=dust_freq<3 if dust_freq<.
 replace dust_highfreq=0 if dust_freq==.
-la var dust_highfreq "At least once a week"
+la var dust_highfreq "Dust at least once a week"
 
 la def dust_highfreq ///
 	0 "No frequent dust" ///
@@ -640,7 +669,7 @@ la val dust_highfreq dust_highfreq
 
 gen noise_highfreq=noise_freq<3 if noise_freq<.
 replace noise_highfreq=0 if noise_freq==.
-la var noise_highfreq "At least once a week"
+la var noise_highfreq "Noise at least once a week"
 
 la def noise_highfreq ///
 	0 "No frequent noise" ///
@@ -649,12 +678,40 @@ la val noise_highfreq noise_highfreq
 
 gen odour_highfreq=odour_freq<3 if odour_freq<.
 replace odour_highfreq=0 if odour_freq==.
-la var odour_highfreq "At least once a week"
+la var odour_highfreq "Odour at least once a week"
 
 la def odour_highfreq ///
 	0 "No frequent odour" ///
 	1 "Odour with high frequency"
 la val odour_highfreq odour_highfreq
+
+// Daily frequency vars for the three sources
+gen dust_daily=dust_freq==1 if dust_freq<.
+replace dust_daily=0 if dust_freq==.
+la var dust_daily "Dust at least once a day"
+
+la def dust_daily ///
+	0 "No daily dust" ///
+	1 "Dust with daily frequency"
+la val dust_daily dust_daily
+
+gen noise_daily=noise_freq==1 if noise_freq<.
+replace noise_daily=0 if noise_freq==.
+la var noise_daily "Noise at least once a day"
+
+la def noise_daily ///
+	0 "No daily noise" ///
+	1 "Noise with daily frequency"
+la val noise_daily noise_daily
+
+gen odour_daily=odour_freq==1 if odour_freq<.
+replace odour_daily=0 if odour_freq==.
+la var odour_daily "Odour at least once a day"
+
+la def odour_daily ///
+	0 "No daily odour" ///
+	1 "Odour with daily frequency"
+la val odour_daily odour_daily
 
 * Dummies for the combination of high frequency and high intensity
 gen dust_combined_dum=0
