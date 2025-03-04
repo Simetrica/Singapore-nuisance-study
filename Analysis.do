@@ -122,15 +122,15 @@ qui eststo: reg lfsato $controlshealth [pw=rakedweight], vce(r)
 overall_coeff female 
 overall_coeff married 
 overall_coeff degree 
-forval i=1/3 {
-	overall_coeff i.employed_cat 
+forval i=0/2 {
+	overall_coeff `i'.employed_cat 
 }
 overall_coeff chinese 
 overall_coeff children 
 overall_coeff religious 
 overall_coeff carer 
 forval i=1/3 {
-	overall_coeff overall_coeff i.agecat
+	overall_coeff `i'.agecat
 }
 overall_coeff physicalhealth 
 overall_coeff mentalhealth
