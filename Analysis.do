@@ -21,7 +21,7 @@ adopath ++ "$GIT/stata_functions"
 *----------------------------------------------------
 use "$OUTPUT/Data/Singapore Nuisance study survey data (clean).dta", clear
 
-putexcel_wait set "$RESULTS", sheet("General regressions v2", replace) modify
+putexcel_wait set "$RESULTS", sheet("General regressions v3", replace) modify
 
 global esttab_opts p wide label star(* 0.10 ** 0.05 *** 0.01) mtitles stats(N r2, labels("N" "R-sq"))
 
@@ -34,60 +34,59 @@ eststo: reg lfsato $controlshealth noise dust odour [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth noise            [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth       dust       [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth            odour [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highfreq i.noise_daily i.dust_highfreq i.dust_daily i.odour_highfreq i.odour_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highfreq i.noise_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_highfreq i.dust_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_highfreq i.odour_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highfreq i.dust_highfreq i.odour_highfreq [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highfreq [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_highfreq [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_highfreq [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_daily i.dust_daily i.odour_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_daily [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highintensity i.noise_hhintensity i.dust_highintensity i.dust_hhintensity i.odour_highintensity i.odour_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highintensity i.noise_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_highintensity i.dust_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_highintensity i.odour_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highintensity i.dust_highintensity i.odour_highintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_highintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_highintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_highintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_hhintensity i.dust_hhintensity i.odour_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_hhintensity [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_combined_dum i.dust_combined_dum i.odour_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_combined_cat i.dust_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.noise_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.dust_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.odour_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_dum [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highfreq dust_highfreq odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_daily dust_daily odour_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highintensity dust_highintensity odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_hhintensity dust_hhintensity odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_combined_dum dust_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_combined_dum [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.noise_combined_cat i.dust_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.noise_combined_cat [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.dust_combined_cat [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.odour_combined_cat [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_combined_dum [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
 *eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance_combined [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance i.sum_nuisance_combined [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
 *eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
-eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
+*eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
 excel, name("Regressions") $esttab_opts replace
 eststo clear
 
 // Code in order to save the coefficient, se, p-value, and sample sizes
 
-putexcel_wait set "$RESULTS", sheet("Sample sizes", replace) modify
+putexcel_wait set "$RESULTS", sheet("Sample sizes v3", replace) modify
 
 global rownumber = 1
 
@@ -119,135 +118,111 @@ program define overall_coeff
     global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 end
 
-qui eststo: reg lfsato $controlshealth dust noise odour [pw=rakedweight], vce(r)
-overall_coeff dust
+qui eststo: reg lfsato $controlshealth [pw=rakedweight], vce(r)
+overall_coeff female 
+overall_coeff married 
+overall_coeff degree 
+forval i=1/3 {
+	overall_coeff i.employed_cat 
+}
+overall_coeff chinese 
+overall_coeff children 
+overall_coeff religious 
+overall_coeff carer 
+forval i=1/3 {
+	overall_coeff overall_coeff i.agecat
+}
+overall_coeff physicalhealth 
+overall_coeff mentalhealth
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+overall_coeff source_neighbours 
+overall_coeff source_commeract 
+overall_coeff source_entertvenues 
+overall_coeff source_retail 
+overall_coeff source_cleanpublic
+overall_coeff source_constrsites 
+overall_coeff source_roadtraffic 
+overall_coeff source_industrial 
+overall_coeff source_other 
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth noise dust odour [pw=rakedweight], vce(r)
 overall_coeff noise
+overall_coeff dust
 overall_coeff odour
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/2 {
-qui eststo: reg lfsato $controlshealth i.cat_dust_freq i.cat_noise_freq i.cat_odour_freq [pw=rakedweight], vce(r)
-overall_coeff `i'.cat_dust_freq 
-overall_coeff `i'.cat_noise_freq 
-overall_coeff `i'.cat_odour_freq
-}
+qui eststo: reg lfsato $controlshealth noise_highfreq dust_highfreq odour_highfreq [pw=rakedweight], vce(r)
+overall_coeff noise_highfreq 
+overall_coeff dust_highfreq 
+overall_coeff odour_highfreq
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/2 {
-qui eststo: reg lfsato $controlshealth i.cat_dust_intensity i.cat_noise_intensity i.cat_odour_intensity [pw=rakedweight], vce(r)
-overall_coeff `i'.cat_dust_intensity
-overall_coeff `i'.cat_noise_intensity
-overall_coeff `i'.cat_odour_intensity
-}
+qui eststo: reg lfsato $controlshealth noise_daily dust_daily odour_daily [pw=rakedweight], vce(r)
+overall_coeff noise_daily 
+overall_coeff dust_daily 
+overall_coeff odour_daily
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-qui eststo: reg lfsato $controlshealth dust_combined_dum noise_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
-overall_coeff dust_combined_dum
-overall_coeff noise_combined_dum
+qui eststo: reg lfsato $controlshealth noise_highintensity dust_highintensity odour_highintensity [pw=rakedweight], vce(r)
+overall_coeff noise_highintensity 
+overall_coeff dust_highintensity 
+overall_coeff odour_highintensity
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth noise_hhintensity dust_hhintensity odour_hhintensity [pw=rakedweight], vce(r)
+overall_coeff noise_hhintensity 
+overall_coeff dust_hhintensity 
+overall_coeff odour_hhintensity
+
+global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
+
+qui eststo: reg lfsato $controlshealth noise_combined_dum dust_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
+overall_coeff noise_combined_dum 
+overall_coeff dust_combined_dum 
 overall_coeff odour_combined_dum
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.dust_combined_cat i.noise_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
-overall_coeff `i'.dust_combined_cat
-overall_coeff `i'.noise_combined_cat
-overall_coeff `i'.odour_combined_cat
-}
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-qui eststo: reg lfsato $controlshealth nuisance [pw=rakedweight], vce(r)
+qui eststo: reg lfsato $controlshealth nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum [pw=rakedweight], vce(r)
 overall_coeff nuisance
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-qui eststo: reg lfsato $controlshealth nuisance_combined_dum [pw=rakedweight], vce(r)
+overall_coeff nuisance_highfreq 
+overall_coeff nuisance_daily 
 overall_coeff nuisance_combined_dum
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-qui eststo: reg lfsato $controlshealth nuisance nuisance_combined_dum [pw=rakedweight], vce(r)
-overall_coeff nuisance
-overall_coeff nuisance_combined_dum
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
-overall_coeff `i'.nuisance_combined_cat
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_v2 [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_v2
 }
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/3 {
-*qui eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
-qui eststo: reg lfsato $controlshealth i.sum_nuisance [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_highfreq_v2
 }
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.sum_nuisance_combined [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance_combined
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_daily_v2
 }
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.sum_nuisance i.sum_nuisance_combined [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance
-overall_coeff `i'.sum_nuisance_combined
-}
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-qui eststo: reg lfsato $controlshealth nuisance_effect [pw=rakedweight], vce(r)
-overall_coeff nuisance_effect
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-qui eststo: reg lfsato $controlshealth nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-overall_coeff nuisance_combined_dum_effect
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-qui eststo: reg lfsato $controlshealth nuisance_effect nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-overall_coeff nuisance_effect
-overall_coeff nuisance_combined_dum_effect
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
-overall_coeff `i'.nuisance_combined_cat_effect
-}
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-forval i=1/3 {
-*qui eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
-qui eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance_effect
-}
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance_combined_effect
-}
-
-global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
-
-forval i=1/3 {
-qui eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
-overall_coeff `i'.sum_nuisance_effect
-overall_coeff `i'.sum_nuisance_combined_effect
+forval i=1/2 {
+qui eststo: reg lfsato $controlshealth i.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+overall_coeff `i'.sum_nuisance_combined_v2
 }
 
 eststo clear

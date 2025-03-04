@@ -123,7 +123,7 @@ la var source_none			"None of the above"
 la var text_source_other 	"Other environment nuisance they are affected by"
 la var roads_distance		"Distance of a busy road from home"
 la var transport_distance	"Distance of a transport hub from home"
-la var industry_distance	"Distance of an industrial industry from home"
+la var industry_distance	"Distance of an industrial site from home"
 la var dust 				"Dust/Smoke nuisance affecting you in your home"
 la var noise 				"Noise nuisance affecting you in your home"
 la var odour 				"Smell/Odour nuisance affecting you in your home"
@@ -824,19 +824,74 @@ la def nuisance_lbl ///
 	1 "At least one nuisance"
 la val nuisance nuisance_lbl
 
+gen nuisance_highfreq=(dust_highfreq==1|noise_highfreq==1|odour_highfreq==1)
+la var nuisance_highfreq "Any high frequency nuisance"
+la def nuisance_highfreq_lbl ///
+	0 "No high frequency nuisance experienced" ///
+	1 "At least one high frequency nuisance"
+la val nuisance_highfreq nuisance_highfreq_lbl
+
+gen nuisance_daily=(dust_daily==1|noise_daily==1|odour_daily==1)
+la var nuisance_daily "Any daily nuisance"
+la def nuisance_daily_lbl ///
+	0 "No daily nuisance experienced" ///
+	1 "At least one daily nuisance"
+la val nuisance_daily nuisance_daily_lbl
+
+gen nuisance_highintensity=(dust_highintensity==1|noise_highintensity==1|odour_highintensity==1)
+la var nuisance_highintensity "Any high intensity nuisance"
+la def nuisance_highintensity_lbl ///
+	0 "No high intensity nuisance experienced" ///
+	1 "At least one high intensity nuisance"
+la val nuisance_highintensity nuisance_highintensity_lbl
+
+gen nuisance_hhintensity=(dust_hhintensity==1|noise_hhintensity==1|odour_hhintensity==1)
+la var nuisance_hhintensity "Any highly problematic nuisance"
+la def nuisance_hhintensity_lbl ///
+	0 "No highly problematic nuisance experienced" ///
+	1 "At least one highly problematic nuisance"
+la val nuisance_hhintensity nuisance_hhintensity_lbl
+
 gen sum_nuisance=dust+noise+odour
 la var sum_nuisance "Number of nuisances experienced"
 la def sum_nuisance ///
 	0 "No nuisance experienced" ///
 	1 "One nuisance experienced" ///
-	2 "Two nuisance experienced" ///
-	3 "Three nuisance experienced" 
+	2 "Two nuisances experienced" ///
+	3 "Three nuisances experienced" 
 la val sum_nuisance sum_nuisance
+
+gen sum_nuisance_v2=sum_nuisance
+replace sum_nuisance_v2=2 if sum_nuisance==3
+la var sum_nuisance_v2 "Number of nuisances experienced (short)"
+la def sum_nuisance_v2_lbl ///
+	0 "No nuisance experienced" ///
+	1 "One nuisance experienced" ///
+	2 "Two or more nuisances experienced"
+la val sum_nuisance_v2 sum_nuisance_v2_lbl
+
+gen sum_nuisance_highfreq_v2=dust_highfreq+noise_highfreq+odour_highfreq
+replace sum_nuisance_highfreq_v2=2 if sum_nuisance_highfreq_v2==3
+la var sum_nuisance_highfreq_v2 "Number of frequent nuisances experienced (short)"
+la def sum_nuisance_highfreq_v2 ///
+	0 "No frequent nuisance experienced" ///
+	1 "One frequent nuisance experienced" ///
+	2 "Two or more frequent nuisances experienced"
+la val sum_nuisance_highfreq_v2 sum_nuisance_highfreq_v2
+
+gen sum_nuisance_daily_v2=dust_daily+noise_daily+odour_daily
+replace sum_nuisance_daily_v2=2 if sum_nuisance_daily_v2==3
+la var sum_nuisance_daily_v2 "Number of daily nuisances experienced (short)"
+la def sum_nuisance_daily_v2 ///
+	0 "No daily nuisance experienced" ///
+	1 "One daily nuisance experienced" ///
+	2 "Two or more daily nuisances experienced"
+la val sum_nuisance_daily_v2 sum_nuisance_daily_v2
 
 gen sum_nuisance_combined=dust_combined_dum+noise_combined_dum+odour_combined_dum
 la var sum_nuisance_combined "Number of high frequency and high intensity nuisances experienced"
 la def sum_nuisance_combined ///
-	0 "No frequent or intense nuisance experienced" ///
+	0 "No frequent and intense nuisance experienced" ///
 	1 "One high frequency and intense nuisance experienced" ///
 	2 "Two high frequency and intense nuisances experienced" ///
 	3 "Three high frequency and intense nuisances experienced" 
@@ -846,7 +901,7 @@ gen sum_nuisance_combined_v2=sum_nuisance_combined if sum_nuisance_combined<3
 replace sum_nuisance_combined_v2=2 if sum_nuisance_combined==3
 la var sum_nuisance_combined_v2 "Number of high frequency and high intensity nuisances experienced"
 la def sum_nuisance_combined_v2 ///
-	0 "No frequent or intense nuisance experienced" ///
+	0 "No frequent and intense nuisance experienced" ///
 	1 "One high frequency and intense nuisance experienced" ///
 	2 "At least two high frequency and intense nuisances experienced" 
 la val sum_nuisance_combined_v2 sum_nuisance_combined_v2
