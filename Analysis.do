@@ -122,18 +122,22 @@ qui eststo: reg lfsato $controlshealth [pw=rakedweight], vce(r)
 overall_coeff female 
 overall_coeff married 
 overall_coeff degree 
-forval i=1/3 {
-	overall_coeff i.employed_cat 
+forval i=0/2 {
+	overall_coeff `i'.employed_cat 
 }
 overall_coeff chinese 
 overall_coeff children 
 overall_coeff religious 
 overall_coeff carer 
 forval i=1/3 {
-	overall_coeff overall_coeff i.agecat
+	overall_coeff `i'.agecat
+}
+forval i=1/7 {
+	overall_coeff `i'.htype
 }
 overall_coeff physicalhealth 
 overall_coeff mentalhealth
+overall_coeff longstandingillness
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
