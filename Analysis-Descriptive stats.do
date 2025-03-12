@@ -27,8 +27,9 @@ putexcel_wait set "$RESULTS", sheet("Descriptives") modify
 * Adding a local for the rownumber (1 is for the names)
 local rownumber = 2
 
-global descriptives dust noise odour dust_highfreq noise_highfreq odour_highfreq dust_highintensity noise_highintensity odour_highintensity dust_freq noise_freq odour_freq dust_intensity noise_intensity odour_intensity ///
-    dust_combined_dum noise_combined_dum odour_combined_dum dust_combined_cat noise_combined_cat odour_combined_cat cat_dust_freq cat_dust_intensity cat_noise_freq cat_noise_intensity cat_odour_freq cat_odour_intensity ///
+global descriptives dust noise odour dust_highfreq noise_highfreq odour_highfreq dust_highintensity noise_highintensity odour_highintensity noise_daily dust_daily odour_daily ///
+    noise_highintensity dust_highintensity odour_highintensity noise_hhintensity dust_hhintensity odour_hhintensity noise_combined_dum dust_combined_dum odour_combined_dum ///
+    nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum sum_nuisance_v2 sum_nuisance_highfreq_v2 sum_nuisance_daily_v2 sum_nuisance_combined_v2 ///
     industry_distance roads_distance transport_distance living_close_1km living_close_500m vulnerable
 
 * Setting column headers
