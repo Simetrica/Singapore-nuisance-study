@@ -21,11 +21,11 @@ adopath ++ "$GIT/stata_functions"
 *----------------------------------------------------
 use "$OUTPUT/Data/Singapore Nuisance study survey data (clean).dta", clear
 
-putexcel_wait set "$RESULTS", sheet("General regressions v3", replace) modify
+putexcel_wait set "$RESULTS", sheet("General regressions", replace) modify
 
 global esttab_opts p wide label star(* 0.10 ** 0.05 *** 0.01) mtitles stats(N r2, labels("N" "R-sq"))
 
-global controlshealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
+global controlshealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat i.htype source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
     source_constrsites source_roadtraffic source_industrial source_other roads_distance transport_distance industry_distance physicalhealth mentalhealth
 eststo clear
 
@@ -54,17 +54,11 @@ eststo: reg lfsato $controlshealth noise_combined_dum dust_combined_dum odour_co
 eststo: reg lfsato $controlshealth noise_combined_dum [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth dust_combined_dum [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth odour_combined_dum [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.noise_combined_cat i.dust_combined_cat i.odour_combined_cat [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.noise_combined_cat [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.dust_combined_cat [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.odour_combined_cat [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth nuisance [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth nuisance_highfreq [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth nuisance_daily [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth nuisance_combined_dum [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_combined_cat [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance i.nuisance_combined_cat [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.sum_nuisance_v2 [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i2.sum_nuisance_v2 [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
@@ -73,20 +67,12 @@ eststo: reg lfsato $controlshealth i.sum_nuisance_daily_v2 [pw=rakedweight], vce
 eststo: reg lfsato $controlshealth i2.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
 eststo: reg lfsato $controlshealth i2.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_dum_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.nuisance_effect i.nuisance_combined_cat_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.sum_nuisance_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
-*eststo: reg lfsato $controlshealth i.sum_nuisance_effect i.sum_nuisance_combined_effect [pw=rakedweight], vce(r)
 excel, name("Regressions") $esttab_opts replace
 eststo clear
 
 // Code in order to save the coefficient, se, p-value, and sample sizes
 
-putexcel_wait set "$RESULTS", sheet("Sample sizes v3", replace) modify
+putexcel_wait set "$RESULTS", sheet("Sample sizes", replace) modify
 
 global rownumber = 1
 
@@ -137,7 +123,7 @@ forval i=1/7 {
 }
 overall_coeff physicalhealth 
 overall_coeff mentalhealth
-overall_coeff longstandingillness
+*overall_coeff longstandingillness
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
@@ -230,7 +216,7 @@ overall_coeff `i'.sum_nuisance_combined_v2
 }
 
 eststo clear
-putexcel_wait set "$RESULTS", sheet("General & distance regs v2", replace) modify
+putexcel_wait set "$RESULTS", sheet("General & distance regs", replace) modify
 
 * Variables of interest with the industry_distance interactions
 eststo: reg lfsato $controlshealth dust noise odour ib6.industry_distance [pw=rakedweight], vce(r)
@@ -344,7 +330,7 @@ overall_coeff `i'.industry_distance
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-foreach i in 0 1 9 {
+foreach i in 0 1 {
 qui eststo: reg lfsato $controlshealth ib1.industry_distance_2km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
 overall_coeff `i'.industry_distance_2km#0.nuisance_combined_dum
 overall_coeff `i'.industry_distance_2km#1.nuisance_combined_dum
@@ -368,7 +354,7 @@ overall_coeff `i'.industry_distance_2km#1.nuisance_combined_dum
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-foreach i in 0 1 9 {
+foreach i in 0 1 {
 qui eststo: reg lfsato $controlshealth ib1.industry_distance_1km#i.nuisance_combined_dum [pw=rakedweight], vce(r)
 overall_coeff `i'.industry_distance_1km#0.nuisance_combined_dum
 overall_coeff `i'.industry_distance_1km#1.nuisance_combined_dum
@@ -392,7 +378,7 @@ overall_coeff `i'.industry_distance_1km#1.nuisance_combined_dum
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-foreach i in 0 1 9 {
+foreach i in 0 1 {
 qui eststo: reg lfsato $controlshealth ib1.industry_distance_500m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
 overall_coeff `i'.industry_distance_500m#0.nuisance_combined_dum
 overall_coeff `i'.industry_distance_500m#1.nuisance_combined_dum
@@ -416,7 +402,7 @@ overall_coeff `i'.industry_distance_500m#1.nuisance_combined_dum
 
 global rownumber = $rownumber + 1 // leaving a blank row to indicate new regression results
 
-foreach i in 0 1 9 {
+foreach i in 0 1 {
 qui eststo: reg lfsato $controlshealth ib1.industry_distance_100m#i.nuisance_combined_dum [pw=rakedweight], vce(r)
 overall_coeff `i'.industry_distance_100m#0.nuisance_combined_dum
 overall_coeff `i'.industry_distance_100m#1.nuisance_combined_dum
