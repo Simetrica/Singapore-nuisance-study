@@ -20,7 +20,7 @@ adopath ++ "$GIT/stata_functions"
 * Import main data
 *---------------------------------------------------
 
-import excel using "$INPUT/Simetrica Jacob raw data - sent.xlsx", sheet("result") firstrow clear
+import excel using "$INPUT/Simetrica Jacob raw data - sent 17 Mar.xlsx", sheet("result") firstrow clear
 
 *---------------------------------------------------
 * Renaming
@@ -1169,6 +1169,53 @@ la def sum_nuisance_intensity ///
 	2 "Two high intensity nuisances experienced" ///
 	3 "Three high intensity nuisances experienced" 
 la val sum_nuisance_intensity sum_nuisance_intensity
+
+// Constituencies
+la def constituency ///
+	1	"Aljunied" ///
+	2	"Ang Mo Kio" ///
+	3	"Bishan Toa Payoh" ///
+	4	"Bukit Panjang" ///
+	5	"Bukit Batok" ///
+	6	"Chua Chu Kang" ///
+	7	"East Coast" ///
+	8	"Fengshan" ///
+	9	"Hong Kah" ///
+	10	"Holland Bukit Timah" ///
+	11	"Hougang" ///
+	12	"Jalan Besar" ///
+	13	"Jurong" ///
+	14	"Macpherson" ///
+	15	"Marine Parade" ///
+	16	"Marsiling Yew Tee" ///
+	17	"Mountbatten" ///
+	18	"Nee Soon" ///
+	19	"Pasir Ris Punggol" ///
+	20	"Pioneer" ///
+	21	"Potong Pasir" ///
+	22	"Radin Mas" ///
+	23	"Sembawang" ///
+	24	"Sengkang" ///
+	25	"Tampines" ///
+	26	"Tanjong Pagar" ///
+	27	"West Coast" ///
+	28	"Yuhua" ///
+	29	"I am not sure." ///
+	30	"Kebun Baru" ///
+	31	"Yio Chu Kang" 
+la val constituency constituency
+
+gen target7=constituency==2 | constituency==13 | constituency==16 | constituency==19 | constituency==20 | constituency==23 | constituency==24
+la var target7 "7 targeted areas"
+la def target ///
+	0 "Rest of Singapore" ///
+	1 "Targeted area"
+la  val target7 target
+
+gen target5=constituency==2 | constituency==13 | constituency==20 | constituency==23 | constituency==24
+la var target5 "5 targeted areas"
+la  val target5 target
+
 
 *--------------------------------------------------
 * Dropping
