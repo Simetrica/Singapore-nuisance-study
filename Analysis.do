@@ -27,6 +27,10 @@ global esttab_opts p wide label star(* 0.10 ** 0.05 *** 0.01) mtitles stats(N r2
 
 global controlshealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat i.htype source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
     source_constrsites source_roadtraffic source_industrial source_other roads_distance transport_distance industry_distance physicalhealth mentalhealth
+	
+global controlsnohealth leq_hhincome female married degree i.employed_cat chinese children religious carer i.agecat i.htype source_neighbours source_commeract source_entertvenues source_retail source_cleanpublic ///
+    source_constrsites source_roadtraffic source_industrial source_other roads_distance transport_distance industry_distance
+	
 eststo clear
 
 eststo: reg lfsato $controlshealth [pw=rakedweight], vce(r)
@@ -216,6 +220,97 @@ overall_coeff `i'.sum_nuisance_combined_v2
 }
 
 eststo clear
+
+
+putexcel_wait set "$RESULTS", sheet("Sensitivity - health", replace) modify
+
+eststo: reg gen_health $controlsnohealth [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise dust odour [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise            [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth       dust       [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth            odour [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_highfreq dust_highfreq odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_highfreq [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth dust_highfreq [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_daily dust_daily odour_daily [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_daily [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth dust_daily [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth odour_daily [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_highintensity dust_highintensity odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_highintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth dust_highintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_hhintensity dust_hhintensity odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_hhintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth dust_hhintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_combined_dum dust_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth noise_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth dust_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth odour_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth nuisance [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth nuisance_highfreq [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth nuisance_daily [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i2.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i2.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i2.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+eststo: reg gen_health $controlsnohealth i2.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+excel, name("Health regressions") $esttab_opts replace
+eststo clear
+
+putexcel_wait set "$RESULTS", sheet("Sensitivity - subsample", replace) modify
+preserve
+drop if target5!=1
+
+eststo: reg lfsato $controlshealth [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise dust odour [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise            [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth       dust       [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth            odour [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highfreq dust_highfreq odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_daily dust_daily odour_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highintensity dust_highintensity odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_highintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_hhintensity dust_hhintensity odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_hhintensity [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_combined_dum dust_combined_dum odour_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth noise_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth dust_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth odour_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance nuisance_highfreq nuisance_daily nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_highfreq [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_daily [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth nuisance_combined_dum [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_highfreq_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_daily_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+eststo: reg lfsato $controlshealth i2.sum_nuisance_combined_v2 [pw=rakedweight], vce(r)
+excel, name("Target sample regressions") $esttab_opts replace
+eststo clear
+restore
+
 putexcel_wait set "$RESULTS", sheet("General & distance regs", replace) modify
 
 * Variables of interest with the industry_distance interactions
