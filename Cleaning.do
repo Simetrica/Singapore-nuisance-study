@@ -533,6 +533,7 @@ la def adults ///
 	9 "9 adults in the household"
 la val adults_a adults
 
+/*
 * Number of adults in the household for the upper bound of the categories
 gen adults_b=.
 replace adults_b= 1 if hsize==1 | (hsize==2 & nchild>0) | (hsize==3 & nchild>1 & nchild<.) | (hsize==4 & nchild==4)  | nchild==.
@@ -546,6 +547,7 @@ replace adults_b= 8 if (hsize==5 & (nchild==. | nchild==0)) | (hsize==6 & nchild
 replace adults_b= 9 if hsize==6 & (nchild==. | nchild==0)
 la var adults_b "Lower bound of adults in the household"
 la val adults_b adults
+*/
 
 * Number of children in the household
 gen child_inc=.
@@ -575,30 +577,9 @@ la var eq_hhincome "Equivalised household income"
 gen leq_hhincome = log(eq_hhincome + 1)
 la var leq_hhincome "Log equivalised household income (+1 correction)"
 
-// Generating variables of interest
-
-// Living within 1km of an industrial site
-gen living_close_1km= industry_distance<5 if industry_distance<.
-la var living_close_1km "Lives within 1km"
-
-la def living_close_1km ///
-	0 "Lives further than 1km" ///
-	1 "Lives close <1km"
-la val living_close_1km living_close_1km
-
-
-// Living within 500m of an industrial site
-gen living_close_500m= industry_distance<4 if industry_distance<.
-la var living_close_500m "Lives within 500m"
-
-la def living_close_500m ///
-	0 "Lives further than 500m" ///
-	1 "Lives close <500m"
-la val living_close_500m living_close_500m
-
-*---------------------
-* Alternative 1
-*---------------------
+*--------------------------------------------------------
+* Generating new variables of interest for each nuisance
+*--------------------------------------------------------
 // High intensity vars for the three sources
 gen dust_highintensity= dust_intensity>2 if dust_intensity<.
 replace dust_highintensity=0 if dust_intensity==.
@@ -608,7 +589,6 @@ la def dust_highintensity ///
 	0 "No intense dust" ///
 	1 "Dust with high intensity"
 la val dust_highintensity dust_highintensity
-
 
 gen noise_highintensity=noise_intensity>2 if noise_intensity<.
 replace noise_highintensity=0 if noise_intensity==.
@@ -637,7 +617,6 @@ la def dust_hhintensity ///
 	0 "No highly problematic dust" ///
 	1 "Dust with highly problematic intensity"
 la val dust_hhintensity dust_hhintensity
-
 
 gen noise_hhintensity=noise_intensity>3 if noise_intensity<.
 replace noise_hhintensity=0 if noise_intensity==.
@@ -713,7 +692,7 @@ la def odour_daily ///
 	1 "Odour with daily frequency"
 la val odour_daily odour_daily
 
-* Dummies for the combination of high frequency and high intensity
+// Dummies for the combination of high frequency and high intensity
 gen dust_combined_dum=0
 replace dust_combined_dum=1 if dust_highfreq==1 & dust_highintensity==1
 la var dust_combined_dum "Dummy dust high frequency and intensity"
@@ -722,7 +701,6 @@ la def dust_combined_dum ///
 	0 "No intense or freq dust" ///
 	1 "Dust with high freq & intensity"
 la val dust_combined_dum dust_combined_dum
-
 
 gen noise_combined_dum=0
 replace noise_combined_dum=1 if noise_highfreq==1 & noise_highintensity==1
@@ -816,13 +794,9 @@ la def odour_distance_lbl ///
 	6 "Odour and Less than 50m from industry"
 la val odour_distance odour_distance_lbl
 
-//Nuisance sources combined
-gen nuisance=(dust==1|noise==1|odour==1)
-la var nuisance "Any of the three nuisances"
-la def nuisance_lbl ///
-	0 "No nuisance experienced" ///
-	1 "At least one nuisance"
-la val nuisance nuisance_lbl
+*---------------------------
+* Nuisance sources combined
+*---------------------------
 
 gen nuisance_highfreq=(dust_highfreq==1|noise_highfreq==1|odour_highfreq==1)
 la var nuisance_highfreq "Any high frequency nuisance"
@@ -831,12 +805,40 @@ la def nuisance_highfreq_lbl ///
 	1 "At least one high frequency nuisance"
 la val nuisance_highfreq nuisance_highfreq_lbl
 
+// For the crosstabs - categorical for the high frequency only across the 3 nuisances
+gen sum_nuisance_freq=dust_highfreq+noise_highfreq+odour_highfreq
+la var sum_nuisance_freq "Number of high frequency nuisances experienced"
+la def sum_nuisance_freq ///
+	0 "No frequent nuisance experienced" ///
+	1 "One high frequency nuisance experienced" ///
+	2 "Two high frequency nuisances experienced" ///
+	3 "Three high frequency nuisances experienced" 
+la val sum_nuisance_freq sum_nuisance_freq
+
+gen sum_nuisance_highfreq_v2=dust_highfreq+noise_highfreq+odour_highfreq
+replace sum_nuisance_highfreq_v2=2 if sum_nuisance_highfreq_v2==3
+la var sum_nuisance_highfreq_v2 "Number of frequent nuisances experienced (short)"
+la def sum_nuisance_highfreq_v2 ///
+	0 "No frequent nuisance experienced" ///
+	1 "One frequent nuisance experienced" ///
+	2 "Two or more frequent nuisances experienced"
+la val sum_nuisance_highfreq_v2 sum_nuisance_highfreq_v2
+
 gen nuisance_daily=(dust_daily==1|noise_daily==1|odour_daily==1)
 la var nuisance_daily "Any daily nuisance"
 la def nuisance_daily_lbl ///
 	0 "No daily nuisance experienced" ///
 	1 "At least one daily nuisance"
 la val nuisance_daily nuisance_daily_lbl
+
+gen sum_nuisance_daily_v2=dust_daily+noise_daily+odour_daily
+replace sum_nuisance_daily_v2=2 if sum_nuisance_daily_v2==3
+la var sum_nuisance_daily_v2 "Number of daily nuisances experienced (short)"
+la def sum_nuisance_daily_v2 ///
+	0 "No daily nuisance experienced" ///
+	1 "One daily nuisance experienced" ///
+	2 "Two or more daily nuisances experienced"
+la val sum_nuisance_daily_v2 sum_nuisance_daily_v2
 
 gen nuisance_highintensity=(dust_highintensity==1|noise_highintensity==1|odour_highintensity==1)
 la var nuisance_highintensity "Any high intensity nuisance"
@@ -845,12 +847,29 @@ la def nuisance_highintensity_lbl ///
 	1 "At least one high intensity nuisance"
 la val nuisance_highintensity nuisance_highintensity_lbl
 
+// Categorical for the high intensity only across the 3 nuisances
+gen sum_nuisance_intensity=dust_highintensity+noise_highintensity+odour_highintensity
+la var sum_nuisance_intensity "Number of high intensity nuisances experienced"
+la def sum_nuisance_intensity ///
+	0 "No intensity nuisance experienced" ///
+	1 "One high intensity nuisance experienced" ///
+	2 "Two high intensity nuisances experienced" ///
+	3 "Three high intensity nuisances experienced" 
+la val sum_nuisance_intensity sum_nuisance_intensity
+
 gen nuisance_hhintensity=(dust_hhintensity==1|noise_hhintensity==1|odour_hhintensity==1)
 la var nuisance_hhintensity "Any highly problematic nuisance"
 la def nuisance_hhintensity_lbl ///
 	0 "No highly problematic nuisance experienced" ///
 	1 "At least one highly problematic nuisance"
 la val nuisance_hhintensity nuisance_hhintensity_lbl
+
+gen nuisance=(dust==1|noise==1|odour==1)
+la var nuisance "Any of the three nuisances"
+la def nuisance_lbl ///
+	0 "No nuisance experienced" ///
+	1 "At least one nuisance"
+la val nuisance nuisance_lbl
 
 gen sum_nuisance=dust+noise+odour
 la var sum_nuisance "Number of nuisances experienced"
@@ -870,24 +889,6 @@ la def sum_nuisance_v2_lbl ///
 	2 "Two or more nuisances experienced"
 la val sum_nuisance_v2 sum_nuisance_v2_lbl
 
-gen sum_nuisance_highfreq_v2=dust_highfreq+noise_highfreq+odour_highfreq
-replace sum_nuisance_highfreq_v2=2 if sum_nuisance_highfreq_v2==3
-la var sum_nuisance_highfreq_v2 "Number of frequent nuisances experienced (short)"
-la def sum_nuisance_highfreq_v2 ///
-	0 "No frequent nuisance experienced" ///
-	1 "One frequent nuisance experienced" ///
-	2 "Two or more frequent nuisances experienced"
-la val sum_nuisance_highfreq_v2 sum_nuisance_highfreq_v2
-
-gen sum_nuisance_daily_v2=dust_daily+noise_daily+odour_daily
-replace sum_nuisance_daily_v2=2 if sum_nuisance_daily_v2==3
-la var sum_nuisance_daily_v2 "Number of daily nuisances experienced (short)"
-la def sum_nuisance_daily_v2 ///
-	0 "No daily nuisance experienced" ///
-	1 "One daily nuisance experienced" ///
-	2 "Two or more daily nuisances experienced"
-la val sum_nuisance_daily_v2 sum_nuisance_daily_v2
-
 gen sum_nuisance_combined=dust_combined_dum+noise_combined_dum+odour_combined_dum
 la var sum_nuisance_combined "Number of high frequency and high intensity nuisances experienced"
 la def sum_nuisance_combined ///
@@ -905,9 +906,6 @@ la def sum_nuisance_combined_v2 ///
 	1 "One high frequency and intense nuisance experienced" ///
 	2 "At least two high frequency and intense nuisances experienced" 
 la val sum_nuisance_combined_v2 sum_nuisance_combined_v2
-
-
-
 
 gen nuisance_combined_dum=(sum_nuisance_combined>=1)
 la var nuisance_combined_dum "Dummy any nuisance with high frequency and intensity"
@@ -927,7 +925,10 @@ la def nuisance_combined_cat_lbl ///
 	3 "At least two frequent and intense nuisances"
 la val nuisance_combined_cat nuisance_combined_cat_lbl
 
-*Accounting for effects response
+*---------------------------------
+* Accounting for effects response
+*---------------------------------
+
 gen effect_sum = effect_sleep + effect_recreation + effect_focus + effect_housework + effect_windows + effect_mood + effect_symptoms + effect_other
 
 gen nuisance_effect=nuisance
@@ -966,7 +967,6 @@ la def sum_nuisance_effect ///
 	3 "Effect from three nuisances"
 la val sum_nuisance_effect sum_nuisance_effect
 
-
 gen sum_nuisance_combined_effect=sum_nuisance_combined
 replace sum_nuisance_combined_effect=0 if effect_none==1 | effect_sum==0
 la var sum_nuisance_combined_effect "Effect with the number of frequent and intense nuisances"
@@ -977,8 +977,9 @@ la def sum_nuisance_combined_effect ///
 	3 "Effect from three frequent and intense nuisances"
 la val sum_nuisance_combined_effect sum_nuisance_combined_effect
 
-
-***
+*-----------------------------------
+* Accounting for distance responses
+*-----------------------------------
 
 gen nuisance_distance=nuisance
 replace nuisance_distance=7-industry_distance if nuisance==1 & industry_distance<=6
@@ -1006,9 +1007,6 @@ la def nuisance_combined_distance_lbl ///
 	6 "At least one frequent/intense nuisance and Less than 50m from industry"
 la val nuisance_combined_distance nuisance_combined_distance_lbl
 
-gen industry_distance2 = industry_distance
-replace industry_distance2=9 if industry_distance==.
-
 gen industry_distance_2km = (industry_distance<=5)
 replace industry_distance_2km=9 if industry_distance==.
 
@@ -1020,155 +1018,6 @@ replace industry_distance_500m=9 if industry_distance==.
 
 gen industry_distance_100m = (industry_distance<=2)
 replace industry_distance_100m=9 if industry_distance==.
-
-*---------------------
-* Alternative 2
-*---------------------
-
-// Intensity vars for the three sources
-gen cat_dust_intensity= 0
-replace cat_dust_intensity=1 if (dust==1 & dust_intensity<3 & dust_intensity<.) | (dust==1 & dust_intensity==.) 
-replace cat_dust_intensity=2 if dust==1 & dust_intensity>2 & dust_intensity<.
-la var cat_dust_intensity "Dust categorical for intensity"
-
-la def cat_dust_intensity ///
-	0 "No dust" ///
-	1 "Dust with low intensity" ///
-	2 "Dust with high intensity"
-la val cat_dust_intensity cat_dust_intensity
-
-gen cat_noise_intensity= 0
-replace cat_noise_intensity=1 if (noise==1 & noise_intensity<3 & noise_intensity<.) | (noise==1 & noise_intensity==.) 
-replace cat_noise_intensity=2 if noise==1 & noise_intensity>2 & noise_intensity<.
-la var cat_noise_intensity "Noise categorical for intensity"
-
-la def cat_noise_intensity ///
-	0 "No noise" ///
-	1 "Noise with low intensity" ///
-	2 "Noise with high intensity"
-la val cat_noise_intensity cat_noise_intensity
-
-gen cat_odour_intensity= 0
-replace cat_odour_intensity=1 if (odour==1 & odour_intensity<3 & odour_intensity<.) | (odour==1 & odour_intensity==.) 
-replace cat_odour_intensity=2 if odour==1 & odour_intensity>2 & odour_intensity<.
-la var cat_odour_intensity "Odour categorical for intensity"
-
-la def cat_odour_intensity ///
-	0 "No odour" ///
-	1 "Odour with low intensity" ///
-	2 "Odour with high intensity"
-la val cat_odour_intensity cat_odour_intensity
-
-
-// Frequency vars for the three sources
-gen cat_dust_freq= 0
-replace cat_dust_freq=1 if (dust==1 & dust_freq>2 & dust_freq<.) | (dust==1 & dust_freq==.) 
-replace cat_dust_freq=2 if dust==1 & dust_freq<3 & dust_freq<.
-la var cat_dust_freq "Dust categorical for frequency"
-
-la def cat_dust_freq ///
-	0 "No dust" ///
-	1 "Dust with low frequency" ///
-	2 "Dust with high frequency"
-la val cat_dust_freq cat_dust_freq
-
-gen cat_noise_freq= 0
-replace cat_noise_freq=1 if (noise==1 & noise_freq>2 & noise_freq<.) | (noise==1 & noise_freq==.) 
-replace cat_noise_freq=2 if noise==1 & noise_freq<3 & noise_freq<.
-la var cat_noise_freq "Noise categorical for frequency"
-
-la def cat_noise_freq ///
-	0 "No noise" ///
-	1 "Noise with low frequency" ///
-	2 "Noise with high frequency"
-la val cat_noise_freq cat_noise_freq
-
-gen cat_odour_freq= 0
-replace cat_odour_freq=1 if (odour==1 & odour_freq>2 & odour_freq<.) | (odour==1 & odour_freq==.) 
-replace cat_odour_freq=2 if odour==1 & odour_freq<3 & odour_freq<.
-la var cat_odour_freq "Odour categorical for frequency"
-
-la def cat_odour_freq ///
-	0 "No odour" ///
-	1 "Odour with low frequency" ///
-	2 "Odour with high frequency"
-la val cat_odour_freq cat_odour_freq
-
-
-// For the crosstabs - categorical for the high frequency only across the 3 nuisances
-gen noise_freq_dum=0
-replace noise_freq_dum=1 if noise_highfreq==1
-la var noise_freq_dum "Dummy noise high frequency"
-
-la def noise_freq_dum ///
-	0 "No freq noise" ///
-	1 "Noise with high freq"
-la val noise_freq_dum noise_freq_dum
-
-gen dust_freq_dum=0
-replace dust_freq_dum=1 if dust_highfreq==1
-la var dust_freq_dum "Dummy dust high frequency"
-
-la def dust_freq_dum ///
-	0 "No freq dust" ///
-	1 "dust with high freq"
-la val dust_freq_dum dust_freq_dum
-
-gen odour_freq_dum=0
-replace odour_freq_dum=1 if odour_highfreq==1
-la var odour_freq_dum "Dummy odour high frequency"
-
-la def odour_freq_dum ///
-	0 "No freq odour" ///
-	1 "odour with high freq"
-la val odour_freq_dum odour_freq_dum
-
-gen sum_nuisance_freq=dust_freq_dum+noise_freq_dum+odour_freq_dum
-la var sum_nuisance_freq "Number of high frequency nuisances experienced"
-la def sum_nuisance_freq ///
-	0 "No frequent nuisance experienced" ///
-	1 "One high frequency nuisance experienced" ///
-	2 "Two high frequency nuisances experienced" ///
-	3 "Three high frequency nuisances experienced" 
-la val sum_nuisance_freq sum_nuisance_freq
-
-
-// categorical for the high intensity only across the 3 nuisances
-gen noise_intensity_dum=0
-replace noise_intensity_dum=1 if noise_highintensity==1
-la var noise_intensity_dum "Dummy noise high intensity"
-
-la def noise_intensity_dum ///
-	0 "No intensity noise" ///
-	1 "Noise with high intensity"
-la val noise_intensity_dum noise_intensity_dum
-
-gen dust_intensity_dum=0
-replace dust_intensity_dum=1 if dust_highintensity==1
-la var dust_intensity_dum "Dummy dust high intensity"
-
-la def dust_intensity_dum ///
-	0 "No intensity dust" ///
-	1 "dust with high intensity"
-la val dust_intensity_dum dust_intensity_dum
-
-gen odour_intensity_dum=0
-replace odour_intensity_dum=1 if odour_highintensity==1
-la var odour_intensity_dum "Dummy odour high intensity"
-
-la def odour_intensity_dum ///
-	0 "No intensity odour" ///
-	1 "odour with high intensity"
-la val odour_intensity_dum odour_intensity_dum
-
-gen sum_nuisance_intensity=dust_intensity_dum+noise_intensity_dum+odour_intensity_dum
-la var sum_nuisance_intensity "Number of high intensity nuisances experienced"
-la def sum_nuisance_intensity ///
-	0 "No intensity nuisance experienced" ///
-	1 "One high intensity nuisance experienced" ///
-	2 "Two high intensity nuisances experienced" ///
-	3 "Three high intensity nuisances experienced" 
-la val sum_nuisance_intensity sum_nuisance_intensity
 
 // Constituencies
 la def constituency ///
